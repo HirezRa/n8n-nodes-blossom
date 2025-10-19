@@ -40,6 +40,16 @@ export class BlossomApi implements ICredentialType {
 					value: 'apiKey',
 					description: 'Use API key for authentication',
 				},
+				{
+					name: 'JWT',
+					value: 'jwt',
+					description: 'Use JWT token for authentication',
+				},
+				{
+					name: 'OAuth 2.0',
+					value: 'oauth2',
+					description: 'Use OAuth 2.0 for authentication',
+				},
 			],
 			default: 'basic',
 			description: 'The authentication method to use',
@@ -84,6 +94,34 @@ export class BlossomApi implements ICredentialType {
 				},
 			},
 			description: 'Your API key for authentication',
+		},
+		{
+			displayName: 'JWT Token',
+			name: 'jwtToken',
+			type: 'string',
+			typeOptions: { password: true },
+			default: '',
+			required: true,
+			displayOptions: {
+				show: {
+					authType: ['jwt'],
+				},
+			},
+			description: 'JWT token for authentication. Generate using: {"iss":"<user_name>","exp":<unix_timestamp>}',
+		},
+		{
+			displayName: 'OAuth 2.0 Token',
+			name: 'oauth2Token',
+			type: 'string',
+			typeOptions: { password: true },
+			default: '',
+			required: true,
+			displayOptions: {
+				show: {
+					authType: ['oauth2'],
+				},
+			},
+			description: 'OAuth 2.0 access token. Get from: {{baseUrl}}/WebServices/sync_2?auth_token',
 		},
 	];
 

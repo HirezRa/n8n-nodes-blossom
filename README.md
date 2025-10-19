@@ -1,27 +1,227 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-blossom
 
-# n8n-nodes-starter
+A comprehensive n8n community node for integrating with Blossom Learning Management System (LMS) API. This node provides full access to the Blossom Sync API V2, supporting all operations for users, groups, memberships, utilities, suppliers, and performance data.
 
-This starter repository helps you build custom integrations for [n8n](https://n8n.io). It includes example nodes, credentials, the node linter, and all the tooling you need to get started.
+## Features
 
-## Quick Start
+- **Complete API Coverage**: Supports all Blossom Sync API V2 operations
+- **Multiple Authentication Methods**: Basic Auth, API Key, JWT, and OAuth 2.0
+- **CSV Import/Export**: Bulk operations for users, groups, and performance data
+- **File Upload Support**: Avatar images, diploma files, and CSV imports
+- **Generic API Access**: Make custom requests to any Blossom endpoint
+- **Comprehensive Error Handling**: Detailed error messages and validation
 
-> [!TIP]
-> **New to building n8n nodes?** The fastest way to get started is with `npm create @n8n/node`. This command scaffolds a complete node package for you using the [@n8n/node-cli](https://www.npmjs.com/package/@n8n/node-cli).
-
-**To create a new node package from scratch:**
-
-```bash
-npm create @n8n/node
-```
-
-**Already using this starter? Start developing with:**
+## Installation
 
 ```bash
-npm run dev
+npm install n8n-nodes-blossom
 ```
 
-This starts n8n with your nodes loaded and hot reload enabled.
+## Authentication
+
+The node supports multiple authentication methods:
+
+### Basic Authentication
+- **Username**: Your Blossom username
+- **Password**: Your Blossom password
+- **Base URL**: Your Blossom instance URL (e.g., `https://mer-group.blossom-kc.com/`)
+
+### API Key Authentication
+- **API Key**: Your Blossom API key
+- **Base URL**: Your Blossom instance URL
+
+### JWT Authentication
+- **JWT Token**: JWT token generated with payload: `{"iss":"<user_name>","exp":<unix_timestamp>}`
+- **Base URL**: Your Blossom instance URL
+
+### OAuth 2.0 Authentication
+- **OAuth 2.0 Token**: Access token obtained from `{{baseUrl}}/WebServices/sync_2?auth_token`
+- **Base URL**: Your Blossom instance URL
+
+## Available Operations
+
+### User Management
+- **Update User**: Create or update user with full profile details
+- **Import Users CSV**: Bulk import users from CSV/Excel files
+- **Delete User**: Delete a single user (soft delete)
+- **Delete Users CSV**: Bulk delete users from CSV/Excel files
+- **Set Avatar**: Upload or remove user avatar (JPG/PNG)
+
+### Group Management
+- **Update Group**: Create or update groups, courses, roles, organizational units, templates, qualifications, and workplans
+- **Import Groups CSV**: Bulk import groups from CSV/Excel files
+- **Delete Group**: Delete a group object
+- **Attach Sub Group**: Attach sub group to parent group
+- **Detach Sub Group**: Detach sub group from parent
+- **Attach Instance**: Attach group/course to template
+- **Detach Instance**: Detach group/course from template
+
+### Membership Management
+- **Attach User to Group**: Add user to group, course, OU, qualification, or workplan
+- **Detach User from Group**: Remove user from group
+- **Detach User from OU**: Remove user from organizational unit
+- **Import Groups Members CSV**: Bulk attach users to groups via CSV
+- **Attach Manager**: Add manager to group with permissions
+- **Detach Manager**: Remove manager from group
+
+### Utility Functions
+- **Test**: Test API connection and get random number
+- **Run Auto Enrollment Rules**: Execute auto enrollment for all workspaces and users
+- **Run Scheduled Imports**: Execute scheduled imports from SFTP or local folder
+- **Remove Empty Org Units**: Delete empty organizational units
+- **User Authorities**: Set HR manager, professional manager, coach, and supervisor
+- **Power Manager**: Set/unset user as power manager
+- **Upload Diploma**: Upload or remove diploma file for user in group
+
+### Supplier Management
+- **Update Supplier**: Create or update supplier by external ID
+- **Delete Supplier**: Delete supplier by external ID
+
+### Performance Management
+- **Import Assignment Performances CSV**: Import assignment performance data
+- **Import Group Performances CSV**: Import group performance data for qualifications and courses
+
+### Generic API
+- **Make Request**: Make custom API requests to any Blossom endpoint
+
+## Usage Examples
+
+### 1. Create a New User
+
+```json
+{
+  "resource": "User",
+  "operation": "updateUser",
+  "domain": "1",
+  "details": {
+    "external_id": "user123",
+    "username": "john.doe",
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "john.doe@company.com",
+    "password": "securePassword123",
+    "birthday": "1990-01-15",
+    "job_title": "Software Developer",
+    "department": "IT"
+  }
+}
+```
+
+### 2. Import Users from CSV
+
+```json
+{
+  "resource": "User",
+  "operation": "importUsersCSV",
+  "domain": "1",
+  "options": {
+    "keep_old_values": "1",
+    "temp_password": "0",
+    "new_user_notification": "1"
+  },
+  "sheet_file": {
+    "value": "csv_content_here",
+    "options": {
+      "filename": "users.csv",
+      "contentType": "text/csv"
+    }
+  }
+}
+```
+
+### 3. Create a Group/Course
+
+```json
+{
+  "resource": "Group",
+  "operation": "updateGroup",
+  "domain": "1",
+  "details": {
+    "external_id": "course456",
+    "name": "Advanced JavaScript",
+    "type": "course",
+    "description": "Learn advanced JavaScript concepts",
+    "open_date": "2024-02-01",
+    "close_date": "2024-03-01",
+    "passing_grade": "80"
+  }
+}
+```
+
+### 4. Attach User to Group
+
+```json
+{
+  "resource": "Membership",
+  "operation": "attachUserToGroup",
+  "domain": "1",
+  "user_identifier": {
+    "external_id": "user123"
+  },
+  "group_identifier": {
+    "external_id": "course456"
+  }
+}
+```
+
+### 5. Upload User Avatar
+
+```json
+{
+  "resource": "User",
+  "operation": "setAvatar",
+  "domain": "1",
+  "user_identifier": {
+    "external_id": "user123"
+  },
+  "remove_avatar": "0",
+  "avatarfile": {
+    "value": "binary_image_data",
+    "options": {
+      "filename": "avatar.jpg",
+      "contentType": "image/jpeg"
+    }
+  }
+}
+```
+
+### 6. Test API Connection
+
+```json
+{
+  "resource": "Utility",
+  "operation": "test"
+}
+```
+
+## CSV Import Templates
+
+### Users CSV Template
+Required columns: `external_id`, `username`, `firstname`, `lastname`, `email`
+Optional columns: `password`, `birthday`, `job_title`, `department`, `company`, `address`, `city`, `zip`, `bphone`, `hphone`, `mphone`, `gender`, `employment_date`, `about`, `user_nt`, `disabled`, `חטיבה`, `קבלן שטח`, `קבלן משרדי`
+
+### Groups CSV Template
+Required columns: `external_id`, `name`, `type`
+Optional columns: `description`, `open_date`, `close_date`, `passing_grade`, `gathering_area`, `location`, `audience`, `estimated_budget`, `publish_grades_criteria`, `publish_grades_on_add`, `hide_score`, `hide_from_members`, `hide_from_user_profile`, `parent_external_id`, `template_external_id`, `classification`
+
+### Group Members CSV Template
+Required columns: `user_external_id` (or `user_id`), `workspace_external_id` (or `group_id`)
+Optional columns: `manager_external_id`, `manager_type`
+
+## Error Handling
+
+The node provides comprehensive error handling with detailed error messages:
+
+- **API Errors**: Returns specific error messages from the Blossom API
+- **Validation Errors**: Validates required parameters before making requests
+- **File Upload Errors**: Handles file format and size validation
+- **Authentication Errors**: Clear messages for authentication failures
+
+## Rate Limits
+
+- **CSV Operations**: Maximum 4 calls per 24 hours
+- **General API**: 30 requests per second
+- **Scheduled Operations**: Run outside working hours for best performance
 
 ## What's Included
 

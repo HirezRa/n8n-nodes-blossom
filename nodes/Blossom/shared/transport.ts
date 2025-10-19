@@ -54,6 +54,22 @@ export async function blossomApiRequest(
 				'Authorization': `Bearer ${apiKey}`,
 			};
 		}
+	} else if (authType === 'jwt') {
+		const jwtToken = credentials?.jwtToken as string;
+		if (jwtToken) {
+			options.headers = {
+				...options.headers,
+				'Authorization': `Bearer ${jwtToken}`,
+			};
+		}
+	} else if (authType === 'oauth2') {
+		const oauth2Token = credentials?.oauth2Token as string;
+		if (oauth2Token) {
+			options.headers = {
+				...options.headers,
+				'Authorization': `Bearer ${oauth2Token}`,
+			};
+		}
 	}
 
 	return this.helpers.httpRequest(options);
