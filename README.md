@@ -21,17 +21,27 @@ npm install n8n-nodes-blossom
 
 If you already have an older version installed and are experiencing issues with updates, you may need to:
 
-1. **Uninstall the old version**:
+1. **Clear npm cache** (if getting 404 errors):
+   ```bash
+   npm cache clean --force
+   ```
+
+2. **Uninstall the old version**:
    ```bash
    npm uninstall n8n-nodes-blossom
    ```
 
-2. **Install the latest version**:
+3. **Install the latest version**:
    ```bash
    npm install n8n-nodes-blossom@latest
    ```
 
-This is necessary because older versions were removed from NPM for security reasons.
+4. **If still having issues, try installing specific version**:
+   ```bash
+   npm install n8n-nodes-blossom@2.0.0
+   ```
+
+**Note**: Older versions (1.1.1 and below) were removed from NPM for security reasons. If you're getting 404 errors, it means n8n is trying to download a version that no longer exists.
 
 ## Authentication
 
