@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "blossom-api-collection",
+		"name": "Blossom API Collection",
+		"description": "Complete collection of Blossom Sync API V2 endpoints for n8n integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "blossom-api"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Test Connection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/Test",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "Test"]
+						},
+						"description": "Test API connection and get random number"
+					}
+				},
+				{
+					"name": "Get Auth Token (OAuth2)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2?auth_token",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2"],
+							"query": [
+								{
+									"key": "auth_token",
+									"value": ""
+								}
+							]
+						},
+						"description": "Get OAuth 2.0 access token"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Update User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domain\": \"{{domain}}\",\n  \"details\": {\n    \"external_id\": \"user123\",\n    \"username\": \"john.doe\",\n    \"firstname\": \"John\",\n    \"lastname\": \"Doe\",\n    \"email\": \"john.doe@company.com\",\n    \"password\": \"SecurePass123!\",\n    \"gender\": \"M\",\n    \"birthday\": \"1990-05-15\",\n    \"employee_id\": \"EMP001\",\n    \"company\": \"Tech Corp\",\n    \"department\": \"Engineering\",\n    \"job_title\": \"Senior Developer\",\n    \"employment_date\": \"2024-01-15\",\n    \"address\": \"123 Main Street\",\n    \"city\": \"New York\",\n    \"zip\": \"10001\",\n    \"mphone\": \"+1-555-0100\",\n    \"bphone\": \"+1-555-0101\",\n    \"hphone\": \"+1-555-0102\",\n    \"user_nt\": \"DOMAIN\\\\johndoe\",\n    \"about\": \"Experienced developer\",\n    \"disabled\": false\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/UpdateUser",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "UpdateUser"]
+						},
+						"description": "Create or update user with full profile details"
+					}
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/GetUser/{{domain}}/external_id={{external_id}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "GetUser", "{{domain}}", "external_id={{external_id}}"]
+						},
+						"description": "Get user details by identifier"
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domain\": \"{{domain}}\",\n  \"user_identifier\": {\n    \"external_id\": \"{{external_id}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/DeleteUser",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "DeleteUser"]
+						},
+						"description": "Delete a user (soft delete)"
+					}
+				},
+				{
+					"name": "Set Avatar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatarfile",
+									"type": "file",
+									"src": "path/to/avatar.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/AvatarSet/{{domain}}/external_id={{external_id}}/0",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "AvatarSet", "{{domain}}", "external_id={{external_id}}", "0"]
+						},
+						"description": "Upload user avatar (JPG/PNG)"
+					}
+				},
+				{
+					"name": "Import Users CSV",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "sheet_file",
+									"type": "file",
+									"src": "path/to/users.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/ImportUsersCSV/{{domain}}/keep_old_values=1&temp_password=0&new_user_notification=0&password_not_required=0&clean_ou=0&manager_ou=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "ImportUsersCSV", "{{domain}}", "keep_old_values=1&temp_password=0&new_user_notification=0&password_not_required=0&clean_ou=0&manager_ou=0"]
+						},
+						"description": "Import multiple users using CSV/Excel"
+					}
+				}
+			]
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "Update Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domain\": \"{{domain}}\",\n  \"details\": {\n    \"external_id\": \"group123\",\n    \"name\": \"Engineering Team\",\n    \"description\": \"Software engineering team\",\n    \"type\": \"group\",\n    \"open_date\": \"2024-01-15\",\n    \"close_date\": \"2024-12-31\",\n    \"passing_grade\": 80,\n    \"gathering_area\": \"Office\",\n    \"location\": \"New York\",\n    \"audience\": \"Employees\",\n    \"estimated_budget\": 50000,\n    \"publish_grades_criteria\": \"on_completion\",\n    \"publish_grades_on_add\": false,\n    \"hide_score\": false,\n    \"hide_from_members\": false,\n    \"hide_from_user_profile\": false,\n    \"parent_external_id\": \"parent123\",\n    \"template_external_id\": \"template123\",\n    \"classification\": \"Internal\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/UpdateGroup",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "UpdateGroup"]
+						},
+						"description": "Create or update group object"
+					}
+				},
+				{
+					"name": "Delete Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domain\": \"{{domain}}\",\n  \"group_identifier\": {\n    \"group_external_id\": \"{{group_external_id}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/DeleteGroup",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "DeleteGroup"]
+						},
+						"description": "Delete a group object"
+					}
+				},
+				{
+					"name": "Attach User to Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domain\": \"{{domain}}\",\n  \"user_identifier\": {\n    \"external_id\": \"{{user_external_id}}\"\n  },\n  \"group_identifier\": {\n    \"group_external_id\": \"{{group_external_id}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/AttachUserToGroup",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "AttachUserToGroup"]
+						},
+						"description": "Attach user to group"
+					}
+				}
+			]
+		},
+		{
+			"name": "Utilities",
+			"item": [
+				{
+					"name": "Run Auto Enrollment Rules",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domain\": \"{{domain}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/RunAutoEnrollmentRules",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "RunAutoEnrollmentRules"]
+						},
+						"description": "Execute auto enrollment rules"
+					}
+				},
+				{
+					"name": "Run Scheduled Imports",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"domain\": \"{{domain}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/WebServices/sync_2/RunScheduledImports",
+							"host": ["{{baseUrl}}"],
+							"path": ["WebServices", "sync_2", "RunScheduledImports"]
+						},
+						"description": "Execute scheduled imports"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://YOUR-COMPANY.blossom-kc.com",
+			"description": "Your Blossom instance base URL"
+		},
+		{
+			"key": "domain",
+			"value": "1",
+			"description": "Your domain ID or name"
+		},
+		{
+			"key": "external_id",
+			"value": "user123",
+			"description": "User external ID"
+		},
+		{
+			"key": "group_external_id",
+			"value": "group123",
+			"description": "Group external ID"
+		},
+		{
+			"key": "user_external_id",
+			"value": "user123",
+			"description": "User external ID"
+		}
+	]
+}
