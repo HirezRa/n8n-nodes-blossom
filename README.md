@@ -24,7 +24,7 @@ The node supports multiple authentication methods:
 ### Basic Authentication
 - **Username**: Your Blossom username
 - **Password**: Your Blossom password
-- **Base URL**: Your Blossom instance URL (e.g., `https://mer-group.blossom-kc.com/`)
+- **Base URL**: Your Blossom instance URL (e.g., `https://blossom-kc.com/`)
 
 ### API Key Authentication
 - **API Key**: Your Blossom API key

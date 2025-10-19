@@ -13,7 +13,7 @@ export class BlossomApi implements ICredentialType {
 
 	icon: Icon = { light: 'file:../icons/blossom.svg', dark: 'file:../icons/blossom.dark.svg' };
 
-	documentationUrl = 'https://mer-group.blossom-kc.com/';
+	documentationUrl = 'https://blossom-kc.com/';
 
 	properties: INodeProperties[] = [
 		{
@@ -21,9 +21,9 @@ export class BlossomApi implements ICredentialType {
 			name: 'baseUrl',
 			type: 'string',
 			default: '',
-			placeholder: 'https://mer-group.blossom-kc.com/',
+			placeholder: 'https://blossom-kc.com/',
 			required: true,
-			description: 'The base URL of your Blossom instance (e.g., https://mer-group.blossom-kc.com/)',
+			description: 'The base URL of your Blossom instance (e.g., https://blossom-kc.com/)',
 		},
 		{
 			displayName: 'Authentication Type',
