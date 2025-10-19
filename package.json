@@ -1,9 +1,9 @@
 {
 	"name": "n8n-nodes-blossom",
-	"version": "1.0.2",
+	"version": "1.0.0",
 	"description": "n8n node for Blossom API integration - Generic integration for any Blossom instance",
 	"license": "MIT",
-	"homepage": "https://github.com/yourusername/n8n-nodes-blossom",
+	"homepage": "https://github.com/HirezRa/n8n-nodes-blossom",
 	"keywords": [
 		"n8n-community-node-package",
 		"blossom",
@@ -12,12 +12,12 @@
 		"generic"
 	],
 	"author": {
-		"name": "Erez",
+		"name": "HiRez10",
 		"email": "kiai66@gmail.com"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/yourusername/n8n-nodes-blossom.git"
+		"url": "https://github.com/HirezRa/n8n-nodes-blossom.git"
 	},
 	"scripts": {
 		"build": "n8n-node build",
