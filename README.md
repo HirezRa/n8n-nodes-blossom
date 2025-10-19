@@ -17,6 +17,22 @@ A comprehensive n8n community node for integrating with Blossom Learning Managem
 npm install n8n-nodes-blossom
 ```
 
+### Important Note for Existing Users
+
+If you already have an older version installed and are experiencing issues with updates, you may need to:
+
+1. **Uninstall the old version**:
+   ```bash
+   npm uninstall n8n-nodes-blossom
+   ```
+
+2. **Install the latest version**:
+   ```bash
+   npm install n8n-nodes-blossom@latest
+   ```
+
+This is necessary because older versions were removed from NPM for security reasons.
+
 ## Authentication
 
 The node supports multiple authentication methods:
