@@ -26,20 +26,36 @@ export class BlossomApi implements ICredentialType {
 			description: 'The base URL of your Blossom instance (e.g., https://mer-group.blossom-kc.com/)',
 		},
 		{
-			displayName: 'API Key',
-			name: 'apiKey',
-			type: 'string',
-			typeOptions: { password: true },
-			default: '',
-			required: true,
-			description: 'Your API key for authentication',
+			displayName: 'Authentication Type',
+			name: 'authType',
+			type: 'options',
+			options: [
+				{
+					name: 'Basic Auth',
+					value: 'basic',
+					description: 'Use username and password for Basic Authentication',
+				},
+				{
+					name: 'API Key',
+					value: 'apiKey',
+					description: 'Use API key for authentication',
+				},
+			],
+			default: 'basic',
+			description: 'The authentication method to use',
 		},
 		{
 			displayName: 'Username',
 			name: 'username',
 			type: 'string',
 			default: '',
-			description: 'Username for authentication (if required)',
+			required: true,
+			displayOptions: {
+				show: {
+					authType: ['basic'],
+				},
+			},
+			description: 'Username for Basic Authentication',
 		},
 		{
 			displayName: 'Password',
@@ -47,7 +63,27 @@ export class BlossomApi implements ICredentialType {
 			type: 'string',
 			typeOptions: { password: true },
 			default: '',
-			description: 'Password for authentication (if required)',
+			required: true,
+			displayOptions: {
+				show: {
+					authType: ['basic'],
+				},
+			},
+			description: 'Password for Basic Authentication',
+		},
+		{
+			displayName: 'API Key',
+			name: 'apiKey',
+			type: 'string',
+			typeOptions: { password: true },
+			default: '',
+			required: true,
+			displayOptions: {
+				show: {
+					authType: ['apiKey'],
+				},
+			},
+			description: 'Your API key for authentication',
 		},
 	];
 
@@ -55,7 +91,6 @@ export class BlossomApi implements ICredentialType {
 		type: 'generic',
 		properties: {
 			headers: {
-				'Authorization': '=Bearer {{$credentials.apiKey}}',
 				'Content-Type': 'application/json',
 			},
 		},

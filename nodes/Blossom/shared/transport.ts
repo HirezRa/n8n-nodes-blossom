@@ -17,6 +17,7 @@ export async function blossomApiRequest(
 ): Promise<unknown> {
 	const credentials = await this.getCredentials('blossomApi');
 	const baseUrl = credentials?.baseUrl as string;
+	const authType = credentials?.authType as string;
 	
 	if (!baseUrl) {
 		throw new Error('Base URL is required');
@@ -31,11 +32,31 @@ export async function blossomApiRequest(
 		qs,
 		body,
 		url: `${cleanBaseUrl}/${cleanEndpoint}`,
-		json: true,
+		json: !body || typeof body === 'object' && !body.sheet_file && !body.avatarfile && !body.diploma_file,
 		timeout: 30000,
 	};
 
-	return this.helpers.httpRequestWithAuthentication.call(this, 'blossomApi', options);
+	// Add authentication based on type
+	if (authType === 'basic') {
+		const username = credentials?.username as string;
+		const password = credentials?.password as string;
+		if (username && password) {
+			options.auth = {
+				username,
+				password,
+			};
+		}
+	} else if (authType === 'apiKey') {
+		const apiKey = credentials?.apiKey as string;
+		if (apiKey) {
+			options.headers = {
+				...options.headers,
+				'Authorization': `Bearer ${apiKey}`,
+			};
+		}
+	}
+
+	return this.helpers.httpRequest(options);
 }
 
 export function getBaseUrl(credentials: unknown): string {

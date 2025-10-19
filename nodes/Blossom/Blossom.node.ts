@@ -5,10 +5,15 @@ import {
 	type IExecuteFunctions,
 	type INodeExecutionData,
 	type IHttpRequestMethods,
-	type IDataObject,
-	NodeOperationError
+	type IDataObject
 } from 'n8n-workflow';
 import { blossomApiRequest } from './shared/transport';
+import { usersDescription } from './resources/users';
+import { groupsDescription } from './resources/groups';
+import { membershipsDescription } from './resources/memberships';
+import { utilitiesDescription } from './resources/utilities';
+import { suppliersDescription } from './resources/suppliers';
+import { performancesDescription } from './resources/performances';
 
 export class Blossom implements INodeType {
 	description: INodeTypeDescription = {
@@ -44,13 +49,44 @@ export class Blossom implements INodeType {
 						description: 'Make generic API requests to any endpoint',
 					},
 					{
-						name: 'WebService',
-						value: 'webServices',
-						description: 'Use WebServices endpoints for data synchronization',
+						name: 'Group',
+						value: 'groups',
+						description: 'Manage groups, courses, roles, and organizational units',
+					},
+					{
+						name: 'Membership',
+						value: 'memberships',
+						description: 'Manage user-group memberships and managers',
+					},
+					{
+						name: 'Performance',
+						value: 'performances',
+						description: 'Import assignment and group performances',
+					},
+					{
+						name: 'Supplier',
+						value: 'suppliers',
+						description: 'Manage suppliers and external institutions',
+					},
+					{
+						name: 'User',
+						value: 'users',
+						description: 'Manage users (create, update, delete, import)',
+					},
+					{
+						name: 'Utility',
+						value: 'utilities',
+						description: 'Utility functions (test, auto-enrollment, authorities)',
 					},
 				],
-				default: 'generic',
+				default: 'users',
 			},
+			...usersDescription,
+			...groupsDescription,
+			...membershipsDescription,
+			...utilitiesDescription,
+			...suppliersDescription,
+			...performancesDescription,
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -70,38 +106,6 @@ export class Blossom implements INodeType {
 					},
 				],
 				default: 'makeRequest',
-			},
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				noDataExpression: true,
-				displayOptions: {
-					show: {
-						resource: ['webServices'],
-					},
-				},
-				options: [
-					{
-						name: 'Sync Data',
-						value: 'syncData',
-						description: 'Sync data using the WebServices/sync_2 endpoint',
-						action: 'Sync data a web services',
-					},
-					{
-						name: 'Get Status',
-						value: 'getStatus',
-						description: 'Get the status of sync operations',
-						action: 'Get status a web services',
-					},
-					{
-						name: 'List Endpoints',
-						value: 'listEndpoints',
-						description: 'List all available WebServices endpoints',
-						action: 'List endpoints a web services',
-					},
-				],
-				default: 'syncData',
 			},
 			{
 				displayName: 'Endpoint',
@@ -210,53 +214,6 @@ export class Blossom implements INodeType {
 				],
 				description: 'Body parameters to send with the request',
 			},
-			{
-				displayName: 'Action',
-				name: 'action',
-				type: 'options',
-				displayOptions: {
-					show: {
-						resource: ['webServices'],
-						operation: ['syncData'],
-					},
-				},
-				options: [
-					{ name: 'Create', value: 'create', description: 'Create new records', action: 'Create a web services' },
-					{ name: 'Delete', value: 'delete', description: 'Delete records', action: 'Delete a web services' },
-					{ name: 'Read', value: 'read', description: 'Read/retrieve records', action: 'Read a web services' },
-					{ name: 'Sync', value: 'sync', description: 'Synchronize data', action: 'Sync a web services' },
-					{ name: 'Update', value: 'update', description: 'Update existing records', action: 'Update a web services' },
-				],
-				default: 'read',
-
-			},
-			{
-				displayName: 'Data',
-				name: 'data',
-				type: 'json',
-				displayOptions: {
-					show: {
-						resource: ['webServices'],
-						operation: ['syncData'],
-					},
-				},
-				default: '{}',
-				description: 'The data to send with the request (JSON format)',
-			},
-			{
-				displayName: 'Entity Type',
-				name: 'entityType',
-				type: 'string',
-				displayOptions: {
-					show: {
-						resource: ['webServices'],
-						operation: ['syncData'],
-					},
-				},
-				default: '',
-				placeholder: 'e.g., customers, orders, products',
-				description: 'The type of entity to sync',
-			},
 		],
 	};
 
@@ -271,7 +228,318 @@ export class Blossom implements INodeType {
 
 				let responseData: unknown;
 
-				if (resource === 'generic') {
+				// Users operations
+				if (resource === 'users') {
+					const domain = this.getNodeParameter('domain', i) as string;
+					
+					if (operation === 'updateUser') {
+						const userDetails = this.getNodeParameter('userDetails.details', i, {}) as Record<string, unknown>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/UpdateUser`, {}, {
+							domain: parseInt(domain),
+							details: userDetails
+						} as IDataObject);
+					} else if (operation === 'deleteUser') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DeleteUser`, {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier
+						} as IDataObject);
+					} else if (operation === 'importUsersCSV') {
+						const csvFile = this.getNodeParameter('csvFile', i) as string;
+						const importOptions = this.getNodeParameter('importOptions.options', i, {}) as Record<string, unknown>;
+						
+						// Add options as query parameters
+						const qs: Record<string, string> = { domain };
+						Object.entries(importOptions).forEach(([key, value]) => {
+							qs[key] = String(value);
+						});
+						
+						// For CSV uploads, we need to use multipart form data
+						const formData = {
+							sheet_file: {
+								value: csvFile,
+								options: {
+									filename: 'users.csv',
+									contentType: 'text/csv'
+								}
+							}
+						};
+						
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/ImportUsersCSV/${domain}`, qs, formData as IDataObject);
+					} else if (operation === 'deleteUsersCSV') {
+						const csvFile = this.getNodeParameter('csvFile', i) as string;
+						
+						const formData = {
+							sheet_file: {
+								value: csvFile,
+								options: {
+									filename: 'delete_users.csv',
+									contentType: 'text/csv'
+								}
+							}
+						};
+						
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DeleteUsersCSV/${domain}`, {}, formData as IDataObject);
+					} else if (operation === 'setAvatar') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const avatarFile = this.getNodeParameter('avatarFile', i) as string;
+						const removeAvatar = this.getNodeParameter('removeAvatar', i) as boolean;
+						
+						let formData: IDataObject = {};
+						if (!removeAvatar && avatarFile) {
+							formData = {
+								avatarfile: {
+									value: avatarFile,
+									options: {
+										filename: 'avatar.jpg',
+										contentType: 'image/jpeg'
+									}
+								}
+							};
+						}
+						
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/AvatarSet/${domain}/${Object.entries(userIdentifier).map(([k, v]) => `${k}=${v}`).join(',')}/${removeAvatar ? '1' : '0'}`, {}, formData);
+					}
+				}
+				// Groups operations
+				else if (resource === 'groups') {
+					const domain = this.getNodeParameter('domain', i) as string;
+					
+					if (operation === 'updateGroup') {
+						const groupDetails = this.getNodeParameter('groupDetails.details', i, {}) as Record<string, unknown>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/UpdateGroup`, {}, {
+							domain: parseInt(domain),
+							details: groupDetails
+						} as IDataObject);
+					} else if (operation === 'deleteGroup') {
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DeleteGroup`, {}, {
+							domain: parseInt(domain),
+							group_identifier: groupIdentifier
+						} as IDataObject);
+					} else if (operation === 'importGroupsCSV') {
+						const csvFile = this.getNodeParameter('csvFile', i) as string;
+						const importOptions = this.getNodeParameter('importOptions.options', i, {}) as Record<string, unknown>;
+						
+						const formData = {
+							sheet_file: {
+								value: csvFile,
+								options: {
+									filename: 'groups.csv',
+									contentType: 'text/csv'
+								}
+							}
+						};
+						
+						const qs: Record<string, string> = { domain };
+						Object.entries(importOptions).forEach(([key, value]) => {
+							qs[key] = String(value);
+						});
+						
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/ImportGroupsCSV/${domain}`, qs, formData as IDataObject);
+					} else if (operation === 'attachSubGroup') {
+						const subGroupIdentifier = this.getNodeParameter('subGroupIdentifier.identifier', i, {}) as Record<string, string>;
+						const parentGroupIdentifier = this.getNodeParameter('parentGroupIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/AttachSubGroup`, {}, {
+							domain: parseInt(domain),
+							sub_group_identifier: subGroupIdentifier,
+							parent_group_identifier: parentGroupIdentifier
+						} as IDataObject);
+					} else if (operation === 'detachSubGroup') {
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DetachSubGroup`, {}, {
+							domain: parseInt(domain),
+							group_identifier: groupIdentifier
+						} as IDataObject);
+					} else if (operation === 'attachInstance') {
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						const templateIdentifier = this.getNodeParameter('templateIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/AttachInstance`, {}, {
+							domain: parseInt(domain),
+							group_identifier: groupIdentifier,
+							template_identifier: templateIdentifier
+						} as IDataObject);
+					} else if (operation === 'detachInstance') {
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DetachInstance`, {}, {
+							domain: parseInt(domain),
+							group_identifier: groupIdentifier
+						} as IDataObject);
+					}
+				}
+				// Memberships operations
+				else if (resource === 'memberships') {
+					const domain = this.getNodeParameter('domain', i) as string;
+					
+					if (operation === 'attachUserToGroup') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/AttachUserToGroup`, {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							group_identifier: groupIdentifier
+						} as IDataObject);
+					} else if (operation === 'detachUserFromGroup') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DetachUserFromGroup`, {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							group_identifier: groupIdentifier
+						} as IDataObject);
+					} else if (operation === 'detachUserFromOu') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DetachUserFromOu`, {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier
+						} as IDataObject);
+					} else if (operation === 'importGroupsMembersCSV') {
+						const csvFile = this.getNodeParameter('csvFile', i) as string;
+						const importOptions = this.getNodeParameter('importOptions.options', i, {}) as Record<string, unknown>;
+						
+						const formData = {
+							sheet_file: {
+								value: csvFile,
+								options: {
+									filename: 'group_members.csv',
+									contentType: 'text/csv'
+								}
+							}
+						};
+						
+						const qs: Record<string, string> = { domain };
+						Object.entries(importOptions).forEach(([key, value]) => {
+							qs[key] = String(value);
+						});
+						
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/ImportGroupsMembersCSV/${domain}`, qs, formData as IDataObject);
+					} else if (operation === 'attachManager') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						const managerType = this.getNodeParameter('managerType', i) as string;
+						const setPrimary = this.getNodeParameter('setPrimary', i) as string;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/AttachManager`, {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							group_identifier: groupIdentifier,
+							manager_type: managerType,
+							set_primary: parseInt(setPrimary)
+						} as IDataObject);
+					} else if (operation === 'detachManager') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DetachManager`, {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							group_identifier: groupIdentifier
+						} as IDataObject);
+					}
+				}
+				// Utilities operations
+				else if (resource === 'utilities') {
+					if (operation === 'test') {
+						responseData = await blossomApiRequest.call(this, 'GET', 'WebServices/sync_2/Test');
+					} else if (operation === 'runAutoEnrollmentRules') {
+						responseData = await blossomApiRequest.call(this, 'POST', 'WebServices/sync_2/RunAutoEnrollmentRules');
+					} else if (operation === 'runScheduledImports') {
+						responseData = await blossomApiRequest.call(this, 'POST', 'WebServices/sync_2/RunScheduledImports');
+					} else if (operation === 'removeEmptyOrgUnits') {
+						const domain = this.getNodeParameter('domain', i) as string;
+						responseData = await blossomApiRequest.call(this, 'POST', 'WebServices/sync_2/RemoveEmptyOrgUnits', {}, {
+							domain: parseInt(domain)
+						} as IDataObject);
+					} else if (operation === 'userAuthorities') {
+						const domain = this.getNodeParameter('domain', i) as string;
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const authorities = this.getNodeParameter('authorities.authorities', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', 'WebServices/sync_2/UserAuthorities', {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							authorities: authorities
+						} as IDataObject);
+					} else if (operation === 'powerManager') {
+						const domain = this.getNodeParameter('domain', i) as string;
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const powerManagerType = this.getNodeParameter('powerManagerType', i) as string;
+						responseData = await blossomApiRequest.call(this, 'POST', 'WebServices/sync_2/PowerManager', {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							type: powerManagerType
+						} as IDataObject);
+					} else if (operation === 'uploadDiploma') {
+						const domain = this.getNodeParameter('domain', i) as string;
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						const diplomaFile = this.getNodeParameter('diplomaFile', i) as string;
+						const removeDiploma = this.getNodeParameter('removeDiploma', i) as boolean;
+						
+						let formData: IDataObject = {};
+						if (!removeDiploma && diplomaFile) {
+							formData = {
+								diploma_file: {
+									value: diplomaFile,
+									options: {
+										filename: 'diploma.pdf',
+										contentType: 'application/pdf'
+									}
+								}
+							};
+						}
+						
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/UploadDiploma/${domain}/${Object.entries(userIdentifier).map(([k, v]) => `${k}=${v}`).join(',')}/${Object.entries(groupIdentifier).map(([k, v]) => `${k}=${v}`).join(',')}/${removeDiploma ? '1' : '0'}`, {}, formData);
+					}
+				}
+				// Suppliers operations
+				else if (resource === 'suppliers') {
+					const domain = this.getNodeParameter('domain', i) as string;
+					
+					if (operation === 'updateSupplier') {
+						const supplierType = this.getNodeParameter('supplierType', i) as string;
+						const supplierDetails = this.getNodeParameter('supplierDetails.details', i, {}) as Record<string, unknown>;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/UpdateSupplier`, {}, {
+							domain: parseInt(domain),
+							type: supplierType,
+							details: supplierDetails
+						} as IDataObject);
+					} else if (operation === 'deleteSupplier') {
+						const externalId = this.getNodeParameter('externalId', i) as string;
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/DeleteSupplier`, {}, {
+							domain: parseInt(domain),
+							ext_id: externalId
+						} as IDataObject);
+					}
+				}
+				// Performances operations
+				else if (resource === 'performances') {
+					const domain = this.getNodeParameter('domain', i) as string;
+					const csvFile = this.getNodeParameter('csvFile', i) as string;
+					
+					if (operation === 'importAssignmentPerformancesCSV') {
+						const formData = {
+							sheet_file: {
+								value: csvFile,
+								options: {
+									filename: 'assignment_performances.csv',
+									contentType: 'text/csv'
+								}
+							}
+						};
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/ImportAssignmentPerformancesCSV/${domain}`, {}, formData as IDataObject);
+					} else if (operation === 'importGroupPerformancesCSV') {
+						const formData = {
+							sheet_file: {
+								value: csvFile,
+								options: {
+									filename: 'group_performances.csv',
+									contentType: 'text/csv'
+								}
+							}
+						};
+						responseData = await blossomApiRequest.call(this, 'POST', `WebServices/sync_2/ImportGroupPerformancesCSV/${domain}`, {}, formData as IDataObject);
+					}
+				}
+				// Generic API operations
+				else if (resource === 'generic') {
 					if (operation === 'makeRequest') {
 						const endpoint = this.getNodeParameter('endpoint', i) as string;
 						const method = this.getNodeParameter('method', i) as string;
@@ -290,31 +558,6 @@ export class Blossom implements INodeType {
 						}
 
 						responseData = await blossomApiRequest.call(this, method as IHttpRequestMethods, endpoint, qs, Object.keys(body).length > 0 ? body : undefined);
-					}
-				} else if (resource === 'webServices') {
-					if (operation === 'syncData') {
-						const action = this.getNodeParameter('action', i) as string;
-						const data = this.getNodeParameter('data', i) as string;
-						const entityType = this.getNodeParameter('entityType', i) as string;
-
-						const requestBody: Record<string, unknown> = {
-							action,
-							entityType,
-						};
-
-						if (data && data !== '{}') {
-							try {
-								requestBody.data = JSON.parse(data);
-							} catch {
-								throw new NodeOperationError(this.getNode(), 'Invalid JSON in data field');
-							}
-						}
-
-						responseData = await blossomApiRequest.call(this, 'POST', 'WebServices/sync_2', {}, requestBody as IDataObject);
-					} else if (operation === 'getStatus') {
-						responseData = await blossomApiRequest.call(this, 'GET', 'WebServices/sync_2', { action: 'status' } as IDataObject);
-					} else if (operation === 'listEndpoints') {
-						responseData = await blossomApiRequest.call(this, 'GET', 'WebServices');
 					}
 				}
 
