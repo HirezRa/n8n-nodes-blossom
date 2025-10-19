@@ -60,14 +60,48 @@ If you already have an older version installed and are experiencing issues with 
 
 **Note**: Older versions (1.1.1 and below) were removed from NPM for security reasons. If you're getting 404 errors, it means n8n is trying to download a version that no longer exists.
 
+## Configuration
+
+### Base Configuration
+```javascript
+const config = {
+  baseURL: 'https://YOUR-COMPANY.blossom-kc.com/WebServices/sync_2',
+  authentication: 'basic',
+  username: 'YOUR_USERNAME',
+  password: 'YOUR_PASSWORD',
+  domain: 'YOUR_DOMAIN' // domain name or id (e.g., '1' or 'company-name')
+};
+```
+
+### Finding Your Configuration
+1. **baseURL**: Replace `YOUR-COMPANY` with your organization's subdomain
+2. **domain**: Check with your Blossom admin or use domain name/ID from system
+3. **credentials**: Use your API user credentials (not your login credentials)
+
+### Rate Limits
+- **API Calls**: Maximum 30 requests per second
+- **CSV Import Methods**: Maximum 4 calls per 24 hours per method
+  - DeleteUsersCSV
+  - ImportUsersCSV
+  - ImportGroupsCSV
+  - ImportGroupsMembersCSV
+- **System Operations**: Maximum 4 calls per 24 hours
+  - RunAutoEnrollmentRules
+  - RunScheduledImports
+
 ## Authentication
 
 The node supports multiple authentication methods:
 
 ### Basic Authentication
-- **Username**: Your Blossom username
-- **Password**: Your Blossom password
-- **Base URL**: Your Blossom instance URL (e.g., `https://blossom-kc.com/`)
+- **Username**: Your API user credentials (not your login credentials)
+- **Password**: Your API user password (not your login password)
+- **Base URL**: Your Blossom instance URL (e.g., `https://YOUR-COMPANY.blossom-kc.com/`)
+
+**Finding Your Configuration:**
+- **Base URL**: Replace `YOUR-COMPANY` with your organization's subdomain
+- **Domain**: Check with your Blossom admin or use domain name/ID from system
+- **Credentials**: Use your API user credentials (not your login credentials)
 
 ### API Key Authentication
 - **API Key**: Your Blossom API key
@@ -164,6 +198,11 @@ The node supports multiple authentication methods:
   }
 }
 ```
+
+**Configuration Notes:**
+- **Base URL**: Replace `YOUR-COMPANY` with your organization's subdomain (e.g., `https://mer-group.blossom-kc.com/`)
+- **Domain**: Use domain name or ID (e.g., '1' or 'company-name')
+- **Credentials**: Use your API user credentials, not your login credentials
 
 ### 2. CSV Import with Options
 

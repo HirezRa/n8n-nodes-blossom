@@ -21,9 +21,9 @@ export class BlossomApi implements ICredentialType {
 			name: 'baseUrl',
 			type: 'string',
 			default: '',
-			placeholder: 'https://blossom-kc.com/',
+			placeholder: 'https://YOUR-COMPANY.blossom-kc.com/',
 			required: true,
-			description: 'The base URL of your Blossom instance (e.g., https://blossom-kc.com/)',
+			description: 'The base URL of your Blossom instance. Replace YOUR-COMPANY with your organization\'s subdomain (e.g., https://mer-group.blossom-kc.com/)',
 		},
 		{
 			displayName: 'Authentication Type',
@@ -65,7 +65,7 @@ export class BlossomApi implements ICredentialType {
 					authType: ['basic'],
 				},
 			},
-			description: 'Username for Basic Authentication',
+			description: 'Your API user credentials (not your login credentials)',
 		},
 		{
 			displayName: 'Password',
@@ -79,7 +79,7 @@ export class BlossomApi implements ICredentialType {
 					authType: ['basic'],
 				},
 			},
-			description: 'Password for Basic Authentication',
+			description: 'Your API user password (not your login password)',
 		},
 		{
 			displayName: 'API Key',
