@@ -60,6 +60,83 @@ If you already have an older version installed and are experiencing issues with 
 
 **Note**: Older versions (1.1.1 and below) were removed from NPM for security reasons. If you're getting 404 errors, it means n8n is trying to download a version that no longer exists.
 
+## Troubleshooting
+
+### Common Connection Issues
+
+#### 1. Authentication Failed (401)
+**Symptoms**: "Authorization failed - please check your credentials"
+
+**Possible Causes**:
+- Wrong username/password (using login credentials instead of API credentials)
+- Wrong domain (check with your Blossom admin)
+- Wrong Base URL format
+- Server not accessible from your network
+
+**Solutions**:
+1. **Verify API Credentials**: Use API user credentials, not your login credentials
+2. **Check Domain**: Verify domain ID or name with your Blossom administrator
+3. **Verify Base URL**: Should be `https://YOUR-COMPANY.blossom-kc.com/WebServices/sync_2`
+4. **Test Network**: Try accessing the URL in a browser
+5. **Check Firewall**: Ensure your network allows outbound HTTPS connections
+
+#### 2. Connection Failed
+**Symptoms**: "Connection failed" or "ENOTFOUND" errors
+
+**Possible Causes**:
+- Network connectivity issues
+- Firewall blocking the connection
+- Proxy configuration
+- Server not available
+
+**Solutions**:
+1. **Check Network**: Test internet connectivity
+2. **Firewall**: Allow outbound HTTPS connections on port 443
+3. **Proxy**: Configure proxy settings if required
+4. **Server Status**: Contact your Blossom administrator
+
+#### 3. Endpoint Not Found (404)
+**Symptoms**: "Endpoint not found" errors
+
+**Possible Causes**:
+- Wrong Base URL
+- Wrong endpoint path
+- API version mismatch
+
+**Solutions**:
+1. **Verify Base URL**: Should end with `/WebServices/sync_2`
+2. **Check Endpoint**: Ensure the endpoint path is correct
+3. **API Version**: Verify you're using the correct API version
+
+#### 4. Server Error (5xx)
+**Symptoms**: "Server error" messages
+
+**Possible Causes**:
+- Server maintenance
+- Server overload
+- Internal server issues
+
+**Solutions**:
+1. **Retry**: Wait a few minutes and try again
+2. **Contact Admin**: Reach out to your Blossom administrator
+3. **Check Status**: Verify server status with your IT team
+
+### Debug Information
+
+When connection fails, the error message will include:
+- Base URL being used
+- Authentication type
+- Domain setting
+- Credential status (Set/Missing)
+- Specific error details
+
+### Getting Help
+
+1. **Check Logs**: Review n8n logs for detailed error information
+2. **Test Credentials**: Use the "Test" button in credentials
+3. **Contact Support**: Reach out to your Blossom administrator
+4. **Documentation**: Check the [API Documentation](docs/API_DOCUMENTATION.md)
+
 ## Configuration
 
 ### Base Configuration

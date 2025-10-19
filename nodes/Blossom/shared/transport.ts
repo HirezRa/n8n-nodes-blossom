@@ -92,17 +92,41 @@ export async function blossomApiRequest(
 			throw new Error(`Authentication failed (401). Please check your credentials:
 - Base URL: ${cleanBaseUrl}
 - Auth Type: ${authType}
-- Make sure your username/password or API key is correct
-- Verify the Base URL is correct and accessible`);
+- Domain: ${credentials?.domain || 'Not set'}
+- Username: ${authType === 'basic' ? (credentials?.username ? 'Set' : 'Missing') : 'N/A'}
+- Password: ${authType === 'basic' ? (credentials?.password ? 'Set' : 'Missing') : 'N/A'}
+- API Key: ${authType === 'apiKey' ? (credentials?.apiKey ? 'Set' : 'Missing') : 'N/A'}
+- JWT Token: ${authType === 'jwt' ? (credentials?.jwtToken ? 'Set' : 'Missing') : 'N/A'}
+- OAuth2 Token: ${authType === 'oauth2' ? (credentials?.oauth2Token ? 'Set' : 'Missing') : 'N/A'}
+
+Common issues:
+1. Wrong username/password (use API credentials, not login credentials)
+2. Wrong domain (check with your Blossom admin)
+3. Wrong Base URL (should end with /WebServices/sync_2)
+4. Server not accessible from your network`);
 		} else if (error.response?.status === 404) {
 			throw new Error(`Endpoint not found (404). Please check:
 - Base URL: ${cleanBaseUrl}
 - Endpoint: ${cleanEndpoint}
-- Make sure the Blossom instance URL is correct`);
+- Domain: ${credentials?.domain || 'Not set'}
+- Make sure the Blossom instance URL is correct
+- Verify the endpoint path is correct`);
 		} else if (error.response?.status >= 500) {
-			throw new Error(`Server error (${error.response.status}). The Blossom server is experiencing issues.`);
+			throw new Error(`Server error (${error.response.status}). The Blossom server is experiencing issues.
+- Base URL: ${cleanBaseUrl}
+- Try again later or contact your Blossom administrator`);
+		} else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+			throw new Error(`Connection failed. Please check:
+- Base URL: ${cleanBaseUrl}
+- Network connectivity
+- Firewall settings
+- Proxy configuration
+- Server availability`);
 		} else {
-			throw new Error(`Request failed: ${error.message}`);
+			throw new Error(`Request failed: ${error.message}
+- Base URL: ${cleanBaseUrl}
+- Endpoint: ${cleanEndpoint}
+- Auth Type: ${authType}`);
 		}
 	});
 }
