@@ -47,20 +47,6 @@ export const usersDescription: INodeProperties[] = [
 		default: 'updateUser',
 	},
 	{
-		displayName: 'Domain',
-		name: 'domain',
-		type: 'string',
-		default: '1',
-		required: true,
-		displayOptions: {
-			show: {
-				...showOnlyForUsers,
-				operation: ['updateUser', 'deleteUser', 'setAvatar'],
-			},
-		},
-		description: 'Domain name or ID',
-	},
-	{
 		displayName: 'User Details',
 		name: 'userDetails',
 		type: 'fixedCollection',

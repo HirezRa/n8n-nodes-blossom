@@ -96,6 +96,7 @@ The node supports multiple authentication methods:
 ### Basic Authentication
 - **Username**: Your API user credentials (not your login credentials)
 - **Password**: Your API user password (not your login password)
+- **Domain**: Domain name or ID (e.g., '1' or 'company-name')
 - **Base URL**: Your Blossom instance URL (e.g., `https://YOUR-COMPANY.blossom-kc.com/`)
 
 **Finding Your Configuration:**
@@ -169,7 +170,6 @@ The node supports multiple authentication methods:
 {
   "resource": "users",
   "operation": "updateUser",
-  "domain": "1",
   "userDetails": {
     "details": {
       "external_id": "a123",
@@ -201,7 +201,7 @@ The node supports multiple authentication methods:
 
 **Configuration Notes:**
 - **Base URL**: Replace `YOUR-COMPANY` with your organization's subdomain (e.g., `https://mer-group.blossom-kc.com/`)
-- **Domain**: Use domain name or ID (e.g., '1' or 'company-name')
+- **Domain**: Configure in credentials (e.g., '1' or 'company-name')
 - **Credentials**: Use your API user credentials, not your login credentials
 
 ### 2. CSV Import with Options

@@ -82,6 +82,19 @@ export class BlossomApi implements ICredentialType {
 			description: 'Your API user password (not your login password)',
 		},
 		{
+			displayName: 'Domain',
+			name: 'domain',
+			type: 'string',
+			default: '1',
+			required: true,
+			displayOptions: {
+				show: {
+					authType: ['basic'],
+				},
+			},
+			description: 'Domain name or ID (e.g., \'1\' or \'company-name\'). Check with your Blossom admin.',
+		},
+		{
 			displayName: 'API Key',
 			name: 'apiKey',
 			type: 'string',

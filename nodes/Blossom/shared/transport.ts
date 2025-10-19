@@ -114,3 +114,11 @@ export function getBaseUrl(credentials: unknown): string {
 	}
 	return baseUrl.replace(/\/$/, '');
 }
+
+export function getDomain(credentials: unknown): string {
+	const domain = (credentials as { domain?: string })?.domain;
+	if (!domain) {
+		throw new Error('Domain is required');
+	}
+	return domain;
+}
