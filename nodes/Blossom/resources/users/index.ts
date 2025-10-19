@@ -80,6 +80,13 @@ export const usersDescription: INodeProperties[] = [
 				displayName: 'Details',
 				values: [
 					{
+						displayName: 'About',
+						name: 'about',
+						type: 'string',
+						default: '',
+						description: 'User bio or description',
+					},
+					{
 						displayName: 'Address',
 						name: 'address',
 						type: 'string',
@@ -88,9 +95,10 @@ export const usersDescription: INodeProperties[] = [
 					{
 						displayName: 'Birthday',
 						name: 'birthday',
-						type: 'dateTime',
+						type: 'string',
 						default: '',
-						description: 'Birthday (yyyy-mm-dd format)',
+						placeholder: '1990-05-15',
+						description: 'Birthday in yyyy-mm-dd format',
 					},
 					{
 						displayName: 'City',
@@ -132,6 +140,14 @@ export const usersDescription: INodeProperties[] = [
 						default: '',
 					},
 					{
+						displayName: 'Employment Date',
+						name: 'employment_date',
+						type: 'string',
+						default: '',
+						placeholder: '2024-01-15',
+						description: 'Employment date in yyyy-mm-dd format',
+					},
+					{
 						displayName: 'External ID',
 						name: 'external_id',
 						type: 'string',
@@ -143,6 +159,23 @@ export const usersDescription: INodeProperties[] = [
 						name: 'firstname',
 						type: 'string',
 						default: '',
+					},
+					{
+						displayName: 'Gender',
+						name: 'gender',
+						type: 'options',
+						options: [
+							{
+								name: 'Male',
+								value: 'M',
+							},
+							{
+								name: 'Female',
+								value: 'F',
+							},
+						],
+						default: 'M',
+						description: 'User gender',
 					},
 					{
 						displayName: 'Job Title',
@@ -185,6 +218,14 @@ export const usersDescription: INodeProperties[] = [
 						description: 'Mobile phone',
 					},
 					{
+						displayName: 'User NT',
+						name: 'user_nt',
+						type: 'string',
+						default: '',
+						placeholder: 'DOMAIN\\username',
+						description: 'Windows domain username',
+					},
+					{
 						displayName: 'Username',
 						name: 'username',
 						type: 'string',
@@ -196,7 +237,7 @@ export const usersDescription: INodeProperties[] = [
 						type: 'string',
 						default: '',
 					},
-				],
+			],
 			},
 		],
 

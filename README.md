@@ -6,9 +6,26 @@ A comprehensive n8n community node for integrating with Blossom Learning Managem
 
 - **Complete API Coverage**: Supports all Blossom Sync API V2 operations
 - **Multiple Authentication Methods**: Basic Auth, API Key, JWT, and OAuth 2.0
-- **CSV Import/Export**: Bulk operations for users, groups, and performance data
-- **File Upload Support**: Avatar images, diploma files, and CSV imports
-- **Generic API Access**: Make custom requests to any Blossom endpoint
+- **User Management**: Create, update, delete users and bulk import/export via CSV
+  - Complete user profiles with all available fields (gender, employment_date, about, user_nt, etc.)
+  - Avatar management (upload/remove)
+  - Custom field support by name, ID, or key
+- **Group Management**: Manage groups, courses, roles, organizational units, templates, qualifications, and workplans
+  - Full group hierarchy support (attach/detach subgroups)
+  - Template attachment for courses and groups
+  - Grade publishing controls and visibility settings
+- **Membership Management**: Attach/detach users to groups and manage managers
+  - Manager permissions (all, none, specific permissions)
+  - Primary manager settings
+  - User authorities (HR manager, professional manager, coach, supervisor)
+- **Performance Tracking**: Import assignment and group performances
+  - CSV import for assignment performances
+  - CSV import for group performances (qualifications and courses)
+  - Diploma upload support
+- **Supplier Management**: Manage external suppliers and institutions
+- **Utility Functions**: Test connections, run auto-enrollment rules, manage user authorities
+- **File Upload Support**: Handle CSV imports, avatar uploads, and diploma uploads
+- **Generic API Access**: Make custom requests to any Blossom API endpoint
 - **Comprehensive Error Handling**: Detailed error messages and validation
 
 ## Installation
@@ -112,80 +129,144 @@ The node supports multiple authentication methods:
 
 ## Usage Examples
 
-### 1. Create a New User
+### 1. Complete User Profile Creation
 
 ```json
 {
-  "resource": "User",
+  "resource": "users",
   "operation": "updateUser",
   "domain": "1",
-  "details": {
-    "external_id": "user123",
-    "username": "john.doe",
-    "firstname": "John",
-    "lastname": "Doe",
-    "email": "john.doe@company.com",
-    "password": "securePassword123",
-    "birthday": "1990-01-15",
-    "job_title": "Software Developer",
-    "department": "IT"
-  }
-}
-```
-
-### 2. Import Users from CSV
-
-```json
-{
-  "resource": "User",
-  "operation": "importUsersCSV",
-  "domain": "1",
-  "options": {
-    "keep_old_values": "1",
-    "temp_password": "0",
-    "new_user_notification": "1"
-  },
-  "sheet_file": {
-    "value": "csv_content_here",
-    "options": {
-      "filename": "users.csv",
-      "contentType": "text/csv"
+  "userDetails": {
+    "details": {
+      "external_id": "a123",
+      "username": "john.doe",
+      "firstname": "John",
+      "lastname": "Doe",
+      "password": "SecurePass123!",
+      "email": "john.doe@company.com",
+      "gender": "M",
+      "birthday": "1990-05-15",
+      "employee_id": "EMP001",
+      "company": "Tech Corp",
+      "department": "Engineering",
+      "job_title": "Senior Developer",
+      "employment_date": "2024-01-15",
+      "address": "123 Main Street",
+      "city": "New York",
+      "zip": "10001",
+      "mphone": "+1-555-0100",
+      "bphone": "+1-555-0101",
+      "hphone": "+1-555-0102",
+      "user_nt": "DOMAIN\\johndoe",
+      "about": "Experienced developer",
+      "disabled": false
     }
   }
 }
 ```
 
-### 3. Create a Group/Course
+### 2. CSV Import with Options
 
 ```json
 {
-  "resource": "Group",
-  "operation": "updateGroup",
-  "domain": "1",
-  "details": {
-    "external_id": "course456",
-    "name": "Advanced JavaScript",
-    "type": "course",
-    "description": "Learn advanced JavaScript concepts",
-    "open_date": "2024-02-01",
-    "close_date": "2024-03-01",
-    "passing_grade": "80"
+  "resource": "users",
+  "operation": "importUsersCSV",
+  "csvFile": "external_id,username,firstname,lastname,email,password,disabled\na123,john.doe,John,Doe,john@company.com,Pass123!,0\na124,jane.smith,Jane,Smith,jane@company.com,Pass456!,0",
+  "importOptions": {
+    "options": {
+      "keep_old_values": true,
+      "temp_password": true,
+      "new_user_notification": true,
+      "password_not_required": false,
+      "manager_ou": true,
+      "clean_ou": true
+    }
   }
 }
 ```
 
-### 4. Attach User to Group
+### 3. Group Creation with All Fields
 
 ```json
 {
-  "resource": "Membership",
-  "operation": "attachUserToGroup",
+  "resource": "groups",
+  "operation": "updateGroup",
   "domain": "1",
-  "user_identifier": {
-    "external_id": "user123"
+  "groupDetails": {
+    "details": {
+      "external_id": "COURSE001",
+      "name": "JavaScript Fundamentals",
+      "type": "course",
+      "description": "Learn JavaScript programming",
+      "open_date": "2024-01-15",
+      "close_date": "2024-12-31",
+      "passing_grade": 70,
+      "gathering_area": "Building A, Room 301",
+      "location": "New York Office",
+      "audience": "Developers, Technical Staff",
+      "estimated_budget": 5000,
+      "publish_grades_criteria": "on_completion",
+      "publish_grades_on_add": false,
+      "hide_score": false,
+      "hide_from_members": false,
+      "hide_from_user_profile": false,
+      "parent_external_id": "OU-ENG",
+      "template_external_id": "TPL001",
+      "classification": "Technical Training"
+    }
+  }
+}
+```
+
+### 4. Manager Operations
+
+```json
+{
+  "resource": "memberships",
+  "operation": "attachManager",
+  "domain": "1",
+  "userIdentifier": {
+    "identifier": {
+      "external_id": "a123"
+    }
   },
-  "group_identifier": {
-    "external_id": "course456"
+  "groupIdentifier": {
+    "identifier": {
+      "group_external_id": "COURSE001"
+    }
+  },
+  "managerType": "all",
+  "setPrimary": 1
+}
+```
+
+### 5. Performance Import
+
+```json
+{
+  "resource": "performances",
+  "operation": "importAssignmentPerformancesCSV",
+  "csvFile": "user_name,assignment_id,date,grade,completed\njohn.doe,ASSIGN001,2024-01-15,85,Yes\njane.smith,ASSIGN001,2024-01-16,92,Yes"
+}
+```
+
+### 6. User Authorities
+
+```json
+{
+  "resource": "utilities",
+  "operation": "setUserAuthorities",
+  "domain": "1",
+  "userIdentifier": {
+    "identifier": {
+      "external_id": "a123"
+    }
+  },
+  "authorities": {
+    "user_hr_manager_id": "a007",
+    "user_professional_manager_id": "a007",
+    "user_coach_id": "a007",
+    "user_auth_supervisor_id": "a007"
   }
 }
 ```

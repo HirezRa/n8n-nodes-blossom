@@ -107,9 +107,10 @@ export const groupsDescription: INodeProperties[] = [
 					{
 						displayName: 'Close Date',
 						name: 'close_date',
-						type: 'dateTime',
+						type: 'string',
 						default: '',
-						description: 'Close date (yyyy-mm-dd format)',
+						placeholder: '2024-12-31',
+						description: 'Close date in yyyy-mm-dd format',
 					},
 					{
 						displayName: 'Description',
@@ -122,7 +123,7 @@ export const groupsDescription: INodeProperties[] = [
 						displayName: 'Estimated Budget',
 						name: 'estimated_budget',
 						type: 'number',
-						default: 0,
+						default: 0
 					},
 					{
 						displayName: 'External ID',
@@ -136,6 +137,27 @@ export const groupsDescription: INodeProperties[] = [
 						name: 'gathering_area',
 						type: 'string',
 						default: '',
+					},
+					{
+						displayName: 'Hide From Members',
+						name: 'hide_from_members',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to hide from group members',
+					},
+					{
+						displayName: 'Hide From User Profile',
+						name: 'hide_from_user_profile',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to hide from user profile',
+					},
+					{
+						displayName: 'Hide Score',
+						name: 'hide_score',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to hide score from users',
 					},
 					{
 						displayName: 'Location',
@@ -153,9 +175,10 @@ export const groupsDescription: INodeProperties[] = [
 					{
 						displayName: 'Open Date',
 						name: 'open_date',
-						type: 'dateTime',
+						type: 'string',
 						default: '',
-						description: 'Open date (yyyy-mm-dd format)',
+						placeholder: '2024-01-15',
+						description: 'Open date in yyyy-mm-dd format',
 					},
 					{
 						displayName: 'Parent External ID',
@@ -168,7 +191,21 @@ export const groupsDescription: INodeProperties[] = [
 						displayName: 'Passing Grade',
 						name: 'passing_grade',
 						type: 'number',
-						default: 0,
+						default: 0
+					},
+					{
+						displayName: 'Publish Grades Criteria',
+						name: 'publish_grades_criteria',
+						type: 'string',
+						default: '',
+						description: 'Criteria for publishing grades (e.g., on_completion)',
+					},
+					{
+						displayName: 'Publish Grades On Add',
+						name: 'publish_grades_on_add',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to publish grades when user is added',
 					},
 					{
 						displayName: 'Template External ID',
