@@ -45,6 +45,18 @@ export const membershipsDescription: INodeProperties[] = [
 				action: 'Detach user from OU',
 			},
 			{
+				name: 'Get Memberships',
+				value: 'getMemberships',
+				description: 'Get list of memberships with filters',
+				action: 'Get memberships',
+			},
+			{
+				name: 'Get User Groups',
+				value: 'getUserGroups',
+				description: 'Get groups for a specific user',
+				action: 'Get user groups',
+			},
+			{
 				name: 'Import Groups Members CSV',
 				value: 'importGroupsMembersCSV',
 				description: 'Attach multiple users to workspaces using CSV/Excel',

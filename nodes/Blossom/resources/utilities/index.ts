@@ -15,6 +15,18 @@ export const utilitiesDescription: INodeProperties[] = [
 		},
 		options: [
 			{
+				name: 'Get Domain Info',
+				value: 'getDomainInfo',
+				description: 'Get domain information and settings',
+				action: 'Get domain info',
+			},
+			{
+				name: 'Get System Info',
+				value: 'getSystemInfo',
+				description: 'Get system information and version',
+				action: 'Get system info',
+			},
+			{
 				name: 'Power Manager',
 				value: 'powerManager',
 				description: 'Set/unset user as power manager',

@@ -54,7 +54,7 @@ If you already have an older version installed and are experiencing issues with 
    ```
 
 4. **If still having issues, try installing specific version**:
-   ```bash
+```bash
    npm install n8n-nodes-blossom@2.0.0
    ```
 
@@ -120,13 +120,19 @@ The node supports multiple authentication methods:
 
 ### User Management
 - **Update User**: Create or update user with full profile details
+- **Get User**: Get user details by identifier (external_id, user_id, username, identity_num)
+- **Get Users**: Get list of users with filters (limit, offset, search, department, company)
 - **Import Users CSV**: Bulk import users from CSV/Excel files
 - **Delete User**: Delete a single user (soft delete)
 - **Delete Users CSV**: Bulk delete users from CSV/Excel files
 - **Set Avatar**: Upload or remove user avatar (JPG/PNG)
+- **User Authorities**: Set user authorities (HR manager, professional manager, coach, supervisor)
 
 ### Group Management
 - **Update Group**: Create or update groups, courses, roles, organizational units, templates, qualifications, and workplans
+- **Get Group**: Get group details by identifier (group_id, group_external_id)
+- **Get Groups**: Get list of groups with filters (limit, offset, search, type)
+- **Get Group Members**: Get list of group members
 - **Import Groups CSV**: Bulk import groups from CSV/Excel files
 - **Delete Group**: Delete a group object
 - **Attach Sub Group**: Attach sub group to parent group
@@ -138,12 +144,16 @@ The node supports multiple authentication methods:
 - **Attach User to Group**: Add user to group, course, OU, qualification, or workplan
 - **Detach User from Group**: Remove user from group
 - **Detach User from OU**: Remove user from organizational unit
+- **Get Memberships**: Get list of memberships with filters
+- **Get User Groups**: Get groups for a specific user
 - **Import Groups Members CSV**: Bulk attach users to groups via CSV
 - **Attach Manager**: Add manager to group with permissions
 - **Detach Manager**: Remove manager from group
 
 ### Utility Functions
 - **Test**: Test API connection and get random number
+- **Get System Info**: Get system information and version
+- **Get Domain Info**: Get domain information and settings
 - **Run Auto Enrollment Rules**: Execute auto enrollment for all workspaces and users
 - **Run Scheduled Imports**: Execute scheduled imports from SFTP or local folder
 - **Remove Empty Org Units**: Delete empty organizational units

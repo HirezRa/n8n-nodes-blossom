@@ -26,6 +26,18 @@ export const usersDescription: INodeProperties[] = [
 				action: 'Delete users from CSV',
 			},
 			{
+				name: 'Get User',
+				value: 'getUser',
+				description: 'Get user details by identifier',
+				action: 'Get a user',
+			},
+			{
+				name: 'Get Users',
+				value: 'getUsers',
+				description: 'Get list of users with filters',
+				action: 'Get users',
+			},
+			{
 				name: 'Import Users CSV',
 				value: 'importUsersCSV',
 				description: 'Import multiple users using CSV/Excel',
@@ -42,6 +54,12 @@ export const usersDescription: INodeProperties[] = [
 				value: 'updateUser',
 				description: 'Create or update user',
 				action: 'Update a user',
+			},
+			{
+				name: 'User Authorities',
+				value: 'userAuthorities',
+				description: 'Set user authorities (HR manager, professional manager, coach, supervisor)',
+				action: 'Set user authorities',
 			},
 		],
 		default: 'updateUser',
@@ -384,5 +402,168 @@ export const usersDescription: INodeProperties[] = [
 			},
 		},
 		description: 'Whether to remove current avatar',
+	},
+	{
+		displayName: 'User Identifier',
+		name: 'userIdentifier',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: false,
+		},
+		default: {},
+		displayOptions: {
+			show: {
+				...showOnlyForUsers,
+				operation: ['getUser', 'deleteUser'],
+			},
+		},
+		options: [
+			{
+				name: 'identifier',
+				displayName: 'Identifier',
+				values: [
+					{
+						displayName: 'External ID',
+						name: 'external_id',
+						type: 'string',
+						default: '',
+						description: 'External ID from foreign system',
+					},
+					{
+						displayName: 'User ID',
+						name: 'user_id',
+						type: 'string',
+						default: '',
+						description: 'Internal user ID',
+					},
+					{
+						displayName: 'Username',
+						name: 'user_name',
+						type: 'string',
+						default: '',
+
+					},
+					{
+						displayName: 'Identity Number',
+						name: 'identity_num',
+						type: 'string',
+						default: '',
+
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: false,
+		},
+		default: {},
+		displayOptions: {
+			show: {
+				...showOnlyForUsers,
+				operation: ['getUsers'],
+			},
+		},
+		options: [
+			{
+				name: 'filter',
+				displayName: 'Filter',
+				values: [
+					{
+						displayName: 'Company',
+						name: 'company',
+						type: 'string',
+						default: '',
+						description: 'Filter by company',
+					},
+					{
+						displayName: 'Department',
+						name: 'department',
+						type: 'string',
+						default: '',
+						description: 'Filter by department',
+					},
+					{
+						displayName: 'Limit',
+						name: 'limit',
+						type: 'number',
+						typeOptions: {
+							minValue: 1,
+						},
+						default: 50,
+						description: 'Max number of results to return',
+					},
+					{
+						displayName: 'Offset',
+						name: 'offset',
+						type: 'number',
+						default: 0,
+						description: 'Number of users to skip',
+					},
+					{
+						displayName: 'Search',
+						name: 'search',
+						type: 'string',
+						default: '',
+						description: 'Search term for users',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Authorities',
+		name: 'authorities',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: false,
+		},
+		default: {},
+		displayOptions: {
+			show: {
+				...showOnlyForUsers,
+				operation: ['userAuthorities'],
+			},
+		},
+		options: [
+			{
+				name: 'authority',
+				displayName: 'Authority',
+				values: [
+					{
+						displayName: 'HR Manager',
+						name: 'hr_manager',
+						type: 'boolean',
+						default: false,
+						description: 'Whether user is HR manager',
+					},
+					{
+						displayName: 'Professional Manager',
+						name: 'professional_manager',
+						type: 'boolean',
+						default: false,
+						description: 'Whether user is professional manager',
+					},
+					{
+						displayName: 'Coach',
+						name: 'coach',
+						type: 'boolean',
+						default: false,
+						description: 'Whether user is coach',
+					},
+					{
+						displayName: 'Supervisor',
+						name: 'supervisor',
+						type: 'boolean',
+						default: false,
+						description: 'Whether user is supervisor',
+					},
+				],
+			},
+		],
 	},
 ];
