@@ -1,0 +1,60 @@
+{
+	"name": "n8n-nodes-blossom",
+	"version": "2.3.8",
+	"description": "n8n node for Blossom API integration - Generic integration for any Blossom instance",
+	"license": "MIT",
+	"homepage": "https://github.com/HirezRa/n8n-nodes-blossom",
+	"keywords": [
+		"n8n-community-node-package",
+		"blossom",
+		"api",
+		"integration",
+		"generic"
+	],
+	"author": {
+		"name": "HiRez10",
+		"email": "kiai66@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/HirezRa/n8n-nodes-blossom.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "n8n-node release",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage",
+		"prepublishOnly": "npm run build && npm run test"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/BlossomApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Blossom/Blossom.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "*",
+		"@types/jest": "^29.5.0",
+		"eslint": "9.32.0",
+		"jest": "^29.5.0",
+		"prettier": "3.6.2",
+		"release-it": "^19.0.4",
+		"ts-jest": "^29.1.0",
+		"typescript": "5.9.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}

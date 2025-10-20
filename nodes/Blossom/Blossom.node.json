@@ -1,0 +1,19 @@
+{
+	"node": "n8n-nodes-blossom",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Communication"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/yourusername/n8n-nodes-blossom#credentials"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/yourusername/n8n-nodes-blossom"
+			}
+		]
+	},
+	"alias": ["Blossom", "API", "Generic"]
+}
