@@ -141,6 +141,10 @@ export class BlossomApi implements ICredentialType {
 	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
+			auth: {
+				username: '={{$credentials.username}}',
+				password: '={{$credentials.password}}',
+			},
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -152,6 +156,10 @@ export class BlossomApi implements ICredentialType {
 			baseURL: '={{$credentials.baseUrl}}',
 			url: '/WebServices/sync_2/Test/{{$credentials.domain}}',
 			method: 'GET',
+			auth: {
+				username: '={{$credentials.username}}',
+				password: '={{$credentials.password}}',
+			},
 		},
 	};
 }
