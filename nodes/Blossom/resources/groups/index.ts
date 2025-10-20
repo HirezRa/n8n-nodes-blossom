@@ -45,24 +45,6 @@ export const groupsDescription: INodeProperties[] = [
 				action: 'Detach sub group',
 			},
 			{
-				name: 'Get Group',
-				value: 'getGroup',
-				description: 'Get group details by identifier',
-				action: 'Get a group',
-			},
-			{
-				name: 'Get Group Members',
-				value: 'getGroupMembers',
-				description: 'Get list of group members',
-				action: 'Get group members',
-			},
-			{
-				name: 'Get Groups',
-				value: 'getGroups',
-				description: 'Get list of groups with filters',
-				action: 'Get groups',
-			},
-			{
 				name: 'Import Groups CSV',
 				value: 'importGroupsCSV',
 				description: 'Import multiple workspaces using CSV/Excel',

@@ -35,7 +35,7 @@ describe('Blossom Node', () => {
 		expect(resourceValues).toContain('utilities');
 		expect(resourceValues).toContain('suppliers');
 		expect(resourceValues).toContain('performances');
-		expect(resourceValues).toContain('generic');
+		expect(resourceValues).toContain('managers');
 	});
 
 	it('should be usable as tool', () => {

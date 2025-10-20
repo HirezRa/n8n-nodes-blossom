@@ -15,22 +15,10 @@ export const membershipsDescription: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Attach Manager',
-				value: 'attachManager',
-				description: 'Attach manager to a group object',
-				action: 'Attach manager',
-			},
-			{
 				name: 'Attach User to Group',
 				value: 'attachUserToGroup',
 				description: 'Attach user to a group object (Group/Course/Ou/Qualification/Workplan)',
 				action: 'Attach user to group',
-			},
-			{
-				name: 'Detach Manager',
-				value: 'detachManager',
-				description: 'Detach manager from a group object',
-				action: 'Detach manager',
 			},
 			{
 				name: 'Detach User From Group',
@@ -43,18 +31,6 @@ export const membershipsDescription: INodeProperties[] = [
 				value: 'detachUserFromOu',
 				description: 'Detach user from its only OU',
 				action: 'Detach user from OU',
-			},
-			{
-				name: 'Get Memberships',
-				value: 'getMemberships',
-				description: 'Get list of memberships with filters',
-				action: 'Get memberships',
-			},
-			{
-				name: 'Get User Groups',
-				value: 'getUserGroups',
-				description: 'Get groups for a specific user',
-				action: 'Get user groups',
 			},
 			{
 				name: 'Import Groups Members CSV',
@@ -74,7 +50,7 @@ export const membershipsDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForMemberships,
-				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu', 'attachManager', 'detachManager'],
+				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu'],
 			},
 		},
 		description: 'Domain name or ID',
@@ -90,7 +66,7 @@ export const membershipsDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForMemberships,
-				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu', 'attachManager', 'detachManager'],
+				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu'],
 			},
 		},
 		options: [

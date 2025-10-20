@@ -4,13 +4,13 @@ import {
 	type INodeTypeDescription,
 	type IExecuteFunctions,
 	type INodeExecutionData,
-	type IHttpRequestMethods,
 	type IDataObject
 } from 'n8n-workflow';
 import { blossomApiRequest } from './shared/transport';
 import { usersDescription } from './resources/users';
 import { groupsDescription } from './resources/groups';
 import { membershipsDescription } from './resources/memberships';
+import { managersDescription } from './resources/managers';
 import { utilitiesDescription } from './resources/utilities';
 import { suppliersDescription } from './resources/suppliers';
 import { performancesDescription } from './resources/performances';
@@ -44,14 +44,14 @@ export class Blossom implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: 'Generic API',
-						value: 'generic',
-						description: 'Make generic API requests to any endpoint',
-					},
-					{
 						name: 'Group',
 						value: 'groups',
 						description: 'Manage groups, courses, roles, and organizational units',
+					},
+					{
+						name: 'Manager',
+						value: 'managers',
+						description: 'Manage managers and user authorities',
 					},
 					{
 						name: 'Membership',
@@ -83,137 +83,11 @@ export class Blossom implements INodeType {
 			},
 			...usersDescription,
 			...groupsDescription,
+			...managersDescription,
 			...membershipsDescription,
 			...utilitiesDescription,
 			...suppliersDescription,
 			...performancesDescription,
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				noDataExpression: true,
-				displayOptions: {
-					show: {
-						resource: ['generic'],
-					},
-				},
-				options: [
-					{
-						name: 'Make Request',
-						value: 'makeRequest',
-						description: 'Make a generic API request to any endpoint',
-						action: 'Make request a generic',
-					},
-				],
-				default: 'makeRequest',
-			},
-			{
-				displayName: 'Endpoint',
-				name: 'endpoint',
-				type: 'string',
-				default: 'WebServices/sync_2',
-				required: true,
-				displayOptions: {
-					show: {
-						resource: ['generic'],
-					},
-				},
-				description: 'The API endpoint to call (relative to base URL)',
-			},
-			{
-				displayName: 'HTTP Method',
-				name: 'method',
-				type: 'options',
-				options: [
-					{ name: 'DELETE', value: 'DELETE' },
-					{ name: 'GET', value: 'GET' },
-					{ name: 'PATCH', value: 'PATCH' },
-					{ name: 'POST', value: 'POST' },
-					{ name: 'PUT', value: 'PUT' },
-				],
-				default: 'GET',
-				displayOptions: {
-					show: {
-						resource: ['generic'],
-					},
-				},
-				description: 'The HTTP method to use',
-			},
-			{
-				displayName: 'Query Parameters',
-				name: 'queryParameters',
-				type: 'fixedCollection',
-				typeOptions: {
-					multipleValues: true,
-				},
-				default: {},
-				displayOptions: {
-					show: {
-						resource: ['generic'],
-					},
-				},
-				options: [
-					{
-						name: 'parameters',
-						displayName: 'Parameters',
-						values: [
-							{
-								displayName: 'Name',
-								name: 'name',
-								type: 'string',
-								default: '',
-								description: 'Parameter name',
-							},
-							{
-								displayName: 'Value',
-								name: 'value',
-								type: 'string',
-								default: '',
-								description: 'Parameter value',
-							},
-						],
-					},
-				],
-				description: 'Query parameters to send with the request',
-			},
-			{
-				displayName: 'Body Parameters',
-				name: 'bodyParameters',
-				type: 'fixedCollection',
-				typeOptions: {
-					multipleValues: true,
-				},
-				default: {},
-				displayOptions: {
-					show: {
-						resource: ['generic'],
-						method: ['POST', 'PUT', 'PATCH'],
-					},
-				},
-				options: [
-					{
-						name: 'parameters',
-						displayName: 'Parameters',
-						values: [
-							{
-								displayName: 'Name',
-								name: 'name',
-								type: 'string',
-								default: '',
-								description: 'Parameter name',
-							},
-							{
-								displayName: 'Value',
-								name: 'value',
-								type: 'string',
-								default: '',
-								description: 'Parameter value',
-							},
-						],
-					},
-				],
-				description: 'Body parameters to send with the request',
-			},
 		],
 	};
 
@@ -244,21 +118,6 @@ export class Blossom implements INodeType {
 							domain: parseInt(domain),
 							user_identifier: userIdentifier
 						} as IDataObject);
-					} else if (operation === 'getUser') {
-						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
-						responseData = await blossomApiRequest.call(this, 'POST', `GetUser`, {}, {
-							domain: parseInt(domain),
-							user_identifier: userIdentifier
-						} as IDataObject);
-					} else if (operation === 'getUsers') {
-						const filters = this.getNodeParameter('filters.filter', i, {}) as Record<string, unknown>;
-						const qs: Record<string, string> = { domain };
-						Object.entries(filters).forEach(([key, value]) => {
-							if (value !== undefined && value !== '') {
-								qs[key] = String(value);
-							}
-						});
-						responseData = await blossomApiRequest.call(this, 'POST', `GetUsers`, qs);
 					} else if (operation === 'importUsersCSV') {
 						const csvFile = this.getNodeParameter('csvFile', i) as string;
 						const importOptions = this.getNodeParameter('importOptions.options', i, {}) as Record<string, unknown>;
@@ -332,27 +191,6 @@ export class Blossom implements INodeType {
 							domain: parseInt(domain),
 							group_identifier: groupIdentifier
 						} as IDataObject);
-					} else if (operation === 'getGroup') {
-						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
-						responseData = await blossomApiRequest.call(this, 'POST', `GetGroup`, {}, {
-							domain: parseInt(domain),
-							group_identifier: groupIdentifier
-						} as IDataObject);
-					} else if (operation === 'getGroups') {
-						const filters = this.getNodeParameter('filters.filter', i, {}) as Record<string, unknown>;
-						const qs: Record<string, string> = { domain };
-						Object.entries(filters).forEach(([key, value]) => {
-							if (value !== undefined && value !== '') {
-								qs[key] = String(value);
-							}
-						});
-						responseData = await blossomApiRequest.call(this, 'POST', `GetGroups`, qs);
-					} else if (operation === 'getGroupMembers') {
-						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
-						responseData = await blossomApiRequest.call(this, 'POST', `GetGroupMembers`, {}, {
-							domain: parseInt(domain),
-							group_identifier: groupIdentifier
-						} as IDataObject);
 					} else if (operation === 'importGroupsCSV') {
 						const csvFile = this.getNodeParameter('csvFile', i) as string;
 						const importOptions = this.getNodeParameter('importOptions.options', i, {}) as Record<string, unknown>;
@@ -403,6 +241,48 @@ export class Blossom implements INodeType {
 						} as IDataObject);
 					}
 				}
+				// Managers operations
+				else if (resource === 'managers') {
+					const domain = this.getNodeParameter('domain', i) as string;
+					
+					if (operation === 'attachManager') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						const managerType = this.getNodeParameter('managerType', i) as string;
+						const setPrimary = this.getNodeParameter('setPrimary', i) as string;
+						responseData = await blossomApiRequest.call(this, 'POST', `AttachManager`, {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							group_identifier: groupIdentifier,
+							manager_type: managerType,
+							set_primary: setPrimary
+						} as IDataObject);
+					} else if (operation === 'detachManager') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', `DetachManager`, {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							group_identifier: groupIdentifier
+						} as IDataObject);
+					} else if (operation === 'powerManager') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const powerManagerType = this.getNodeParameter('powerManagerType', i) as string;
+						responseData = await blossomApiRequest.call(this, 'POST', 'PowerManager', {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							type: powerManagerType
+						} as IDataObject);
+					} else if (operation === 'userAuthorities') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const authorities = this.getNodeParameter('authorities.authority', i, {}) as Record<string, string>;
+						responseData = await blossomApiRequest.call(this, 'POST', 'UserAuthorities', {}, {
+							domain: parseInt(domain),
+							user_identifier: userIdentifier,
+							authorities: authorities
+						} as IDataObject);
+					}
+				}
 				// Memberships operations
 				else if (resource === 'memberships') {
 					const domain = this.getNodeParameter('domain', i) as string;
@@ -426,21 +306,6 @@ export class Blossom implements INodeType {
 					} else if (operation === 'detachUserFromOu') {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DetachUserFromOu`, {}, {
-							domain: parseInt(domain),
-							user_identifier: userIdentifier
-						} as IDataObject);
-					} else if (operation === 'getMemberships') {
-						const filters = this.getNodeParameter('filters.filter', i, {}) as Record<string, unknown>;
-						const qs: Record<string, string> = { domain };
-						Object.entries(filters).forEach(([key, value]) => {
-							if (value !== undefined && value !== '') {
-								qs[key] = String(value);
-							}
-						});
-						responseData = await blossomApiRequest.call(this, 'POST', `GetMemberships`, qs);
-					} else if (operation === 'getUserGroups') {
-						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
-						responseData = await blossomApiRequest.call(this, 'POST', `GetUserGroups`, {}, {
 							domain: parseInt(domain),
 							user_identifier: userIdentifier
 						} as IDataObject);
@@ -490,13 +355,6 @@ export class Blossom implements INodeType {
 				else if (resource === 'utilities') {
 					if (operation === 'test') {
 						responseData = await blossomApiRequest.call(this, 'POST', 'Test');
-					} else if (operation === 'getSystemInfo') {
-						responseData = await blossomApiRequest.call(this, 'POST', 'GetSystemInfo');
-					} else if (operation === 'getDomainInfo') {
-						const domain = this.getNodeParameter('domain', i) as string;
-						responseData = await blossomApiRequest.call(this, 'POST', 'GetDomainInfo', {}, {
-							domain: parseInt(domain)
-						} as IDataObject);
 					} else if (operation === 'runAutoEnrollmentRules') {
 						responseData = await blossomApiRequest.call(this, 'POST', 'RunAutoEnrollmentRules');
 					} else if (operation === 'runScheduledImports') {
@@ -506,45 +364,6 @@ export class Blossom implements INodeType {
 						responseData = await blossomApiRequest.call(this, 'POST', 'RemoveEmptyOrgUnits', {}, {
 							domain: parseInt(domain)
 						} as IDataObject);
-					} else if (operation === 'userAuthorities') {
-						const domain = this.getNodeParameter('domain', i) as string;
-						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
-						const authorities = this.getNodeParameter('authorities.authorities', i, {}) as Record<string, string>;
-						responseData = await blossomApiRequest.call(this, 'POST', 'UserAuthorities', {}, {
-							domain: parseInt(domain),
-							user_identifier: userIdentifier,
-							authorities: authorities
-						} as IDataObject);
-					} else if (operation === 'powerManager') {
-						const domain = this.getNodeParameter('domain', i) as string;
-						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
-						const powerManagerType = this.getNodeParameter('powerManagerType', i) as string;
-						responseData = await blossomApiRequest.call(this, 'POST', 'PowerManager', {}, {
-							domain: parseInt(domain),
-							user_identifier: userIdentifier,
-							type: powerManagerType
-						} as IDataObject);
-					} else if (operation === 'uploadDiploma') {
-						const domain = this.getNodeParameter('domain', i) as string;
-						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
-						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
-						const diplomaFile = this.getNodeParameter('diplomaFile', i) as string;
-						const removeDiploma = this.getNodeParameter('removeDiploma', i) as boolean;
-						
-						let formData: IDataObject = {};
-						if (!removeDiploma && diplomaFile) {
-							formData = {
-								diploma_file: {
-									value: diplomaFile,
-									options: {
-										filename: 'diploma.pdf',
-										contentType: 'application/pdf'
-									}
-								}
-							};
-						}
-						
-						responseData = await blossomApiRequest.call(this, 'POST', `UploadDiploma/${domain}/${Object.entries(userIdentifier).map(([k, v]) => `${k}=${v}`).join(',')}/${Object.entries(groupIdentifier).map(([k, v]) => `${k}=${v}`).join(',')}/${removeDiploma ? '1' : '0'}`, {}, formData);
 					}
 				}
 				// Suppliers operations
@@ -594,28 +413,29 @@ export class Blossom implements INodeType {
 							}
 						};
 						responseData = await blossomApiRequest.call(this, 'POST', `ImportGroupPerformancesCSV/${domain}`, {}, formData as IDataObject);
-					}
-				}
-				// Generic API operations
-				else if (resource === 'generic') {
-					if (operation === 'makeRequest') {
-						const endpoint = this.getNodeParameter('endpoint', i) as string;
-						const method = this.getNodeParameter('method', i) as string;
-						const queryParams = this.getNodeParameter('queryParameters.parameters', i, []) as Array<{ name: string; value: string }>;
-						const bodyParams = this.getNodeParameter('bodyParameters.parameters', i, []) as Array<{ name: string; value: string }>;
-
-						// Convert parameters to objects
-						const qs: { [key: string]: string } = {};
-						for (const param of queryParams) {
-							qs[param.name] = param.value;
+					} else if (operation === 'uploadDiploma') {
+						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
+						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
+						const diplomaFile = this.getNodeParameter('diplomaFile', i) as string;
+						const removeDiploma = this.getNodeParameter('removeDiploma', i) as boolean;
+						
+						let formData: IDataObject = {};
+						if (!removeDiploma && diplomaFile) {
+							formData = {
+								diploma_file: {
+									value: diplomaFile,
+									options: {
+										filename: 'diploma.pdf',
+										contentType: 'application/pdf'
+									}
+								}
+							};
 						}
-
-						const body: { [key: string]: string } = {};
-						for (const param of bodyParams) {
-							body[param.name] = param.value;
-						}
-
-						responseData = await blossomApiRequest.call(this, method as IHttpRequestMethods, endpoint, qs, Object.keys(body).length > 0 ? body : undefined);
+						
+						const removeFlag = removeDiploma ? '1' : '0';
+						const userParam = userIdentifier.external_id || userIdentifier.user_id || userIdentifier.user_name || userIdentifier.identity_num;
+						const groupParam = groupIdentifier.group_external_id || groupIdentifier.group_id;
+						responseData = await blossomApiRequest.call(this, 'POST', `UploadDiploma/${domain}/${userParam}/${groupParam}/${removeFlag}`, {}, formData);
 					}
 				}
 

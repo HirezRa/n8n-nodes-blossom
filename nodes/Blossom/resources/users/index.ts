@@ -26,18 +26,6 @@ export const usersDescription: INodeProperties[] = [
 				action: 'Delete users from CSV',
 			},
 			{
-				name: 'Get User',
-				value: 'getUser',
-				description: 'Get user details by identifier',
-				action: 'Get a user',
-			},
-			{
-				name: 'Get Users',
-				value: 'getUsers',
-				description: 'Get list of users with filters',
-				action: 'Get users',
-			},
-			{
 				name: 'Import Users CSV',
 				value: 'importUsersCSV',
 				description: 'Import multiple users using CSV/Excel',
@@ -414,7 +402,7 @@ export const usersDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForUsers,
-				operation: ['getUser', 'deleteUser'],
+				operation: ['deleteUser'],
 			},
 		},
 		options: [
@@ -449,67 +437,6 @@ export const usersDescription: INodeProperties[] = [
 						type: 'string',
 						default: '',
 
-					},
-				],
-			},
-		],
-	},
-	{
-		displayName: 'Filters',
-		name: 'filters',
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: false,
-		},
-		default: {},
-		displayOptions: {
-			show: {
-				...showOnlyForUsers,
-				operation: ['getUsers'],
-			},
-		},
-		options: [
-			{
-				name: 'filter',
-				displayName: 'Filter',
-				values: [
-					{
-						displayName: 'Company',
-						name: 'company',
-						type: 'string',
-						default: '',
-						description: 'Filter by company',
-					},
-					{
-						displayName: 'Department',
-						name: 'department',
-						type: 'string',
-						default: '',
-						description: 'Filter by department',
-					},
-					{
-						displayName: 'Limit',
-						name: 'limit',
-						type: 'number',
-						typeOptions: {
-							minValue: 1,
-						},
-						default: 50,
-						description: 'Max number of results to return',
-					},
-					{
-						displayName: 'Offset',
-						name: 'offset',
-						type: 'number',
-						default: 0,
-						description: 'Number of users to skip',
-					},
-					{
-						displayName: 'Search',
-						name: 'search',
-						type: 'string',
-						default: '',
-						description: 'Search term for users',
 					},
 				],
 			},
