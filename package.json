@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-blossom",
-	"version": "2.3.7",
+	"version": "2.3.8",
 	"description": "n8n node for Blossom API integration - Generic integration for any Blossom instance",
 	"license": "MIT",
 	"homepage": "https://github.com/HirezRa/n8n-nodes-blossom",
