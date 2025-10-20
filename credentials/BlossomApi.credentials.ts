@@ -21,9 +21,9 @@ export class BlossomApi implements ICredentialType {
 			name: 'baseUrl',
 			type: 'string',
 			default: '',
-			placeholder: 'https://YOUR-COMPANY.blossom-kc.com/',
+			placeholder: 'https://YOUR-COMPANY.blossom-kc.com/WebServices/sync_2',
 			required: true,
-			description: 'The base URL of your Blossom instance. Replace YOUR-COMPANY with your organization\'s subdomain (e.g., https://mer-group.blossom-kc.com/)',
+			description: 'The full API URL of your Blossom instance. Replace YOUR-COMPANY with your organization\'s subdomain (e.g., https://mer-group.blossom-kc.com/WebServices/sync_2)',
 		},
 		{
 			displayName: 'Authentication Type',
@@ -154,8 +154,8 @@ export class BlossomApi implements ICredentialType {
 	test: ICredentialTestRequest = {
 		request: {
 			baseURL: '={{$credentials.baseUrl}}',
-			url: '/WebServices/sync_2/Test/{{$credentials.domain}}',
-			method: 'GET',
+			url: '/Test',
+			method: 'POST',
 			auth: {
 				username: '={{$credentials.username}}',
 				password: '={{$credentials.password}}',
