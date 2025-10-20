@@ -109,13 +109,13 @@ export class Blossom implements INodeType {
 					if (operation === 'updateUser') {
 						const userDetails = this.getNodeParameter('userDetails.details', i, {}) as Record<string, unknown>;
 						responseData = await blossomApiRequest.call(this, 'POST', `UpdateUser`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							details: userDetails
 						} as IDataObject);
 					} else if (operation === 'deleteUser') {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DeleteUser`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier
 						} as IDataObject);
 					} else if (operation === 'importUsersCSV') {
@@ -139,7 +139,7 @@ export class Blossom implements INodeType {
 							}
 						};
 						
-						responseData = await blossomApiRequest.call(this, 'POST', `ImportUsersCSV/${domain}`, qs, formData as IDataObject);
+						responseData = await blossomApiRequest.call(this, 'POST', `ImportUsersCSV/${parseInt(domain)}`, qs, formData as IDataObject);
 					} else if (operation === 'deleteUsersCSV') {
 						const csvFile = this.getNodeParameter('csvFile', i) as string;
 						
@@ -153,7 +153,7 @@ export class Blossom implements INodeType {
 							}
 						};
 						
-						responseData = await blossomApiRequest.call(this, 'POST', `DeleteUsersCSV/${domain}`, {}, formData as IDataObject);
+						responseData = await blossomApiRequest.call(this, 'POST', `DeleteUsersCSV/${parseInt(domain)}`, {}, formData as IDataObject);
 					} else if (operation === 'setAvatar') {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const avatarFile = this.getNodeParameter('avatarFile', i) as string;
@@ -172,7 +172,7 @@ export class Blossom implements INodeType {
 							};
 						}
 						
-						responseData = await blossomApiRequest.call(this, 'POST', `AvatarSet/${domain}/${Object.entries(userIdentifier).map(([k, v]) => `${k}=${v}`).join(',')}/${removeAvatar ? '1' : '0'}`, {}, formData);
+						responseData = await blossomApiRequest.call(this, 'POST', `AvatarSet/${parseInt(domain)}/${Object.entries(userIdentifier).map(([k, v]) => `${k}=${v}`).join(',')}/${removeAvatar ? '1' : '0'}`, {}, formData);
 					}
 				}
 				// Groups operations
@@ -182,13 +182,13 @@ export class Blossom implements INodeType {
 					if (operation === 'updateGroup') {
 						const groupDetails = this.getNodeParameter('groupDetails.details', i, {}) as Record<string, unknown>;
 						responseData = await blossomApiRequest.call(this, 'POST', `UpdateGroup`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							details: groupDetails
 						} as IDataObject);
 					} else if (operation === 'deleteGroup') {
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DeleteGroup`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							group_identifier: groupIdentifier
 						} as IDataObject);
 					} else if (operation === 'importGroupsCSV') {
@@ -210,33 +210,33 @@ export class Blossom implements INodeType {
 							qs[key] = String(value);
 						});
 						
-						responseData = await blossomApiRequest.call(this, 'POST', `ImportGroupsCSV/${domain}`, qs, formData as IDataObject);
+						responseData = await blossomApiRequest.call(this, 'POST', `ImportGroupsCSV/${parseInt(domain)}`, qs, formData as IDataObject);
 					} else if (operation === 'attachSubGroup') {
 						const subGroupIdentifier = this.getNodeParameter('subGroupIdentifier.identifier', i, {}) as Record<string, string>;
 						const parentGroupIdentifier = this.getNodeParameter('parentGroupIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `AttachSubGroup`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							sub_group_identifier: subGroupIdentifier,
 							parent_group_identifier: parentGroupIdentifier
 						} as IDataObject);
 					} else if (operation === 'detachSubGroup') {
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DetachSubGroup`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							group_identifier: groupIdentifier
 						} as IDataObject);
 					} else if (operation === 'attachInstance') {
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						const templateIdentifier = this.getNodeParameter('templateIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `AttachInstance`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							group_identifier: groupIdentifier,
 							template_identifier: templateIdentifier
 						} as IDataObject);
 					} else if (operation === 'detachInstance') {
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DetachInstance`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							group_identifier: groupIdentifier
 						} as IDataObject);
 					}
@@ -251,7 +251,7 @@ export class Blossom implements INodeType {
 						const managerType = this.getNodeParameter('managerType', i) as string;
 						const setPrimary = this.getNodeParameter('setPrimary', i) as string;
 						responseData = await blossomApiRequest.call(this, 'POST', `AttachManager`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier,
 							group_identifier: groupIdentifier,
 							manager_type: managerType,
@@ -261,7 +261,7 @@ export class Blossom implements INodeType {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DetachManager`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier,
 							group_identifier: groupIdentifier
 						} as IDataObject);
@@ -269,7 +269,7 @@ export class Blossom implements INodeType {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const powerManagerType = this.getNodeParameter('powerManagerType', i) as string;
 						responseData = await blossomApiRequest.call(this, 'POST', 'PowerManager', {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier,
 							type: powerManagerType
 						} as IDataObject);
@@ -277,7 +277,7 @@ export class Blossom implements INodeType {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const authorities = this.getNodeParameter('authorities.authority', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', 'UserAuthorities', {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier,
 							authorities: authorities
 						} as IDataObject);
@@ -291,7 +291,7 @@ export class Blossom implements INodeType {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `AttachUserToGroup`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier,
 							group_identifier: groupIdentifier
 						} as IDataObject);
@@ -299,14 +299,14 @@ export class Blossom implements INodeType {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DetachUserFromGroup`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier,
 							group_identifier: groupIdentifier
 						} as IDataObject);
 					} else if (operation === 'detachUserFromOu') {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DetachUserFromOu`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier
 						} as IDataObject);
 					} else if (operation === 'importGroupsMembersCSV') {
@@ -328,14 +328,14 @@ export class Blossom implements INodeType {
 							qs[key] = String(value);
 						});
 						
-						responseData = await blossomApiRequest.call(this, 'POST', `ImportGroupsMembersCSV/${domain}`, qs, formData as IDataObject);
+						responseData = await blossomApiRequest.call(this, 'POST', `ImportGroupsMembersCSV/${parseInt(domain)}`, qs, formData as IDataObject);
 					} else if (operation === 'attachManager') {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						const managerType = this.getNodeParameter('managerType', i) as string;
 						const setPrimary = this.getNodeParameter('setPrimary', i) as string;
 						responseData = await blossomApiRequest.call(this, 'POST', `AttachManager`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier,
 							group_identifier: groupIdentifier,
 							manager_type: managerType,
@@ -345,7 +345,7 @@ export class Blossom implements INodeType {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DetachManager`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							user_identifier: userIdentifier,
 							group_identifier: groupIdentifier
 						} as IDataObject);
@@ -374,14 +374,14 @@ export class Blossom implements INodeType {
 						const supplierType = this.getNodeParameter('supplierType', i) as string;
 						const supplierDetails = this.getNodeParameter('supplierDetails.details', i, {}) as Record<string, unknown>;
 						responseData = await blossomApiRequest.call(this, 'POST', `UpdateSupplier`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							type: supplierType,
 							details: supplierDetails
 						} as IDataObject);
 					} else if (operation === 'deleteSupplier') {
 						const externalId = this.getNodeParameter('externalId', i) as string;
 						responseData = await blossomApiRequest.call(this, 'POST', `DeleteSupplier`, {}, {
-							domain: domain,
+							domain: parseInt(domain),
 							ext_id: externalId
 						} as IDataObject);
 					}
@@ -401,7 +401,7 @@ export class Blossom implements INodeType {
 								}
 							}
 						};
-						responseData = await blossomApiRequest.call(this, 'POST', `ImportAssignmentPerformancesCSV/${domain}`, {}, formData as IDataObject);
+						responseData = await blossomApiRequest.call(this, 'POST', `ImportAssignmentPerformancesCSV/${parseInt(domain)}`, {}, formData as IDataObject);
 					} else if (operation === 'importGroupPerformancesCSV') {
 						const formData = {
 							sheet_file: {
@@ -412,7 +412,7 @@ export class Blossom implements INodeType {
 								}
 							}
 						};
-						responseData = await blossomApiRequest.call(this, 'POST', `ImportGroupPerformancesCSV/${domain}`, {}, formData as IDataObject);
+						responseData = await blossomApiRequest.call(this, 'POST', `ImportGroupPerformancesCSV/${parseInt(domain)}`, {}, formData as IDataObject);
 					} else if (operation === 'uploadDiploma') {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						const groupIdentifier = this.getNodeParameter('groupIdentifier.identifier', i, {}) as Record<string, string>;
@@ -435,7 +435,7 @@ export class Blossom implements INodeType {
 						const removeFlag = removeDiploma ? '1' : '0';
 						const userParam = userIdentifier.external_id || userIdentifier.user_id || userIdentifier.user_name || userIdentifier.identity_num;
 						const groupParam = groupIdentifier.group_external_id || groupIdentifier.group_id;
-						responseData = await blossomApiRequest.call(this, 'POST', `UploadDiploma/${domain}/${userParam}/${groupParam}/${removeFlag}`, {}, formData);
+						responseData = await blossomApiRequest.call(this, 'POST', `UploadDiploma/${parseInt(domain)}/${userParam}/${groupParam}/${removeFlag}`, {}, formData);
 					}
 				}
 
