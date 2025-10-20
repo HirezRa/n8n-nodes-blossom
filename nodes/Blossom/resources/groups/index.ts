@@ -68,7 +68,7 @@ export const groupsDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForGroups,
-				operation: ['updateGroup', 'deleteGroup', 'attachSubGroup', 'detachSubGroup', 'attachInstance', 'detachInstance'],
+				operation: ['updateGroup', 'deleteGroup', 'importGroupsCSV', 'attachSubGroup', 'detachSubGroup', 'attachInstance', 'detachInstance'],
 			},
 		},
 		description: 'Domain name or ID',

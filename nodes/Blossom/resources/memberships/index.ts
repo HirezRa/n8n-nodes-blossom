@@ -50,7 +50,7 @@ export const membershipsDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForMemberships,
-				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu'],
+				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu', 'importGroupsMembersCSV'],
 			},
 		},
 		description: 'Domain name or ID',
@@ -66,7 +66,7 @@ export const membershipsDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForMemberships,
-				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu'],
+				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu', 'importGroupsMembersCSV'],
 			},
 		},
 		options: [
