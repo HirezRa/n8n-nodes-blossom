@@ -108,10 +108,24 @@ export class Blossom implements INodeType {
 					
 					if (operation === 'updateUser') {
 						const userDetails = this.getNodeParameter('userDetails.details', i, {}) as Record<string, unknown>;
-						responseData = await blossomApiRequest.call(this, 'POST', `UpdateUser`, {}, {
+						
+						// Clean up the user details to ensure proper encoding
+						const cleanUserDetails: Record<string, unknown> = {};
+						Object.entries(userDetails).forEach(([key, value]) => {
+							if (value !== undefined && value !== null && value !== '') {
+								cleanUserDetails[key] = value;
+							}
+						});
+						
+						const requestBody = {
 							domain: parseInt(domain),
-							details: userDetails
-						} as IDataObject);
+							details: cleanUserDetails
+						};
+						
+						// Debug logging
+						console.log('UpdateUser Request Body:', JSON.stringify(requestBody, null, 2));
+						
+						responseData = await blossomApiRequest.call(this, 'POST', `UpdateUser`, {}, requestBody as IDataObject);
 					} else if (operation === 'deleteUser') {
 						const userIdentifier = this.getNodeParameter('userIdentifier.identifier', i, {}) as Record<string, string>;
 						responseData = await blossomApiRequest.call(this, 'POST', `DeleteUser`, {}, {
