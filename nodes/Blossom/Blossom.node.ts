@@ -334,7 +334,8 @@ export class Blossom implements INodeType {
 				// Utilities operations
 				else if (resource === 'utilities') {
 					if (operation === 'test') {
-						responseData = await blossomApiRequest.call(this, 'POST', 'Test');
+						const domain = this.getNodeParameter('domain', i) as string;
+						responseData = await blossomApiRequest.call(this, 'POST', `Test/${parseInt(domain)}`);
 					} else if (operation === 'runAutoEnrollmentRules') {
 						responseData = await blossomApiRequest.call(this, 'POST', 'RunAutoEnrollmentRules');
 					} else if (operation === 'runScheduledImports') {

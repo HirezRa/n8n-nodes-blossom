@@ -49,12 +49,6 @@ export const usersDescription: INodeProperties[] = [
 				description: 'Create or update user',
 				action: 'Update a user',
 			},
-			{
-				name: 'User Authorities',
-				value: 'userAuthorities',
-				description: 'Set user authorities (HR manager, professional manager, coach, supervisor)',
-				action: 'Set user authorities',
-			},
 		],
 		default: 'updateUser',
 	},
@@ -99,15 +93,15 @@ export const usersDescription: INodeProperties[] = [
 						description: 'Division/Unit in Hebrew',
 					},
 					{
-						displayName: 'קבלן	משרדי',
-						name: 'קבלן	משרדי',
+						displayName: 'קבלן משרדי',
+						name: 'קבלן משרדי',
 						type: 'string',
 						default: '',
 						description: 'Office contractor in Hebrew',
 					},
 					{
-						displayName: 'קבלן	שטח',
-						name: 'קבלן	שטח',
+						displayName: 'קבלן שטח',
+						name: 'קבלן שטח',
 						type: 'string',
 						default: '',
 						description: 'Field contractor in Hebrew',
@@ -438,107 +432,5 @@ export const usersDescription: INodeProperties[] = [
 			},
 		},
 		description: 'Whether to remove current avatar',
-	},
-	{
-		displayName: 'User Identifier',
-		name: 'userIdentifier',
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: false,
-		},
-		default: {},
-		displayOptions: {
-			show: {
-				...showOnlyForUsers,
-				operation: ['deleteUser'],
-			},
-		},
-		options: [
-			{
-				name: 'identifier',
-				displayName: 'Identifier',
-				values: [
-					{
-						displayName: 'External ID',
-						name: 'external_id',
-						type: 'string',
-						default: '',
-						description: 'External ID from foreign system',
-					},
-					{
-						displayName: 'User ID',
-						name: 'user_id',
-						type: 'string',
-						default: '',
-						description: 'Internal user ID',
-					},
-					{
-						displayName: 'Username',
-						name: 'user_name',
-						type: 'string',
-						default: '',
-
-					},
-					{
-						displayName: 'Identity Number',
-						name: 'identity_num',
-						type: 'string',
-						default: '',
-
-					},
-				],
-			},
-		],
-	},
-	{
-		displayName: 'Authorities',
-		name: 'authorities',
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: false,
-		},
-		default: {},
-		displayOptions: {
-			show: {
-				...showOnlyForUsers,
-				operation: ['userAuthorities'],
-			},
-		},
-		options: [
-			{
-				name: 'authority',
-				displayName: 'Authority',
-				values: [
-					{
-						displayName: 'HR Manager',
-						name: 'hr_manager',
-						type: 'boolean',
-						default: false,
-						description: 'Whether user is HR manager',
-					},
-					{
-						displayName: 'Professional Manager',
-						name: 'professional_manager',
-						type: 'boolean',
-						default: false,
-						description: 'Whether user is professional manager',
-					},
-					{
-						displayName: 'Coach',
-						name: 'coach',
-						type: 'boolean',
-						default: false,
-						description: 'Whether user is coach',
-					},
-					{
-						displayName: 'Supervisor',
-						name: 'supervisor',
-						type: 'boolean',
-						default: false,
-						description: 'Whether user is supervisor',
-					},
-				],
-			},
-		],
 	},
 ];

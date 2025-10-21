@@ -21,6 +21,12 @@ export const membershipsDescription: INodeProperties[] = [
 				action: 'Attach user to group',
 			},
 			{
+				name: 'Detach Manager',
+				value: 'detachManager',
+				description: 'Detach manager from a group object',
+				action: 'Detach manager',
+			},
+			{
 				name: 'Detach User From Group',
 				value: 'detachUserFromGroup',
 				description: 'Detach user from a group object',
@@ -50,7 +56,7 @@ export const membershipsDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForMemberships,
-				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu', 'importGroupsMembersCSV'],
+				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu', 'importGroupsMembersCSV', 'detachManager'],
 			},
 		},
 		description: 'Domain name or ID',
@@ -66,7 +72,7 @@ export const membershipsDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForMemberships,
-				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu', 'importGroupsMembersCSV'],
+				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachUserFromOu', 'detachManager'],
 			},
 		},
 		options: [
@@ -118,7 +124,7 @@ export const membershipsDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForMemberships,
-				operation: ['attachUserToGroup', 'detachUserFromGroup', 'attachManager', 'detachManager'],
+				operation: ['attachUserToGroup', 'detachUserFromGroup', 'detachManager'],
 			},
 		},
 		options: [
@@ -144,37 +150,6 @@ export const membershipsDescription: INodeProperties[] = [
 			},
 		],
 
-	},
-	{
-		displayName: 'Manager Type',
-		name: 'managerType',
-		type: 'string',
-		default: 'all',
-		displayOptions: {
-			show: {
-				...showOnlyForMemberships,
-				operation: ['attachManager'],
-			},
-		},
-		description: 'Manager permissions name OR \'all\'/\'none\'',
-	},
-	{
-		displayName: 'Set Primary',
-		name: 'setPrimary',
-		type: 'options',
-		options: [
-			{ name: 'No', value: '0', description: 'Do not set as primary' },
-			{ name: 'Yes', value: '1', description: 'Set manager as primary' },
-			{ name: 'Remove Others and Set Primary', value: '2', description: 'Remove existing managers and add this manager as primary' },
-		],
-		default: '0',
-		displayOptions: {
-			show: {
-				...showOnlyForMemberships,
-				operation: ['attachManager'],
-			},
-		},
-		description: 'Set manager as primary',
 	},
 	{
 		displayName: 'CSV File',
