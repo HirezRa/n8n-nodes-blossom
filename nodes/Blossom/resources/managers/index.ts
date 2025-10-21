@@ -90,14 +90,12 @@ export const managersDescription: INodeProperties[] = [
 						name: 'user_name',
 						type: 'string',
 						default: '',
-
 					},
 					{
 						displayName: 'Identity Number',
 						name: 'identity_num',
 						type: 'string',
 						default: '',
-
 					},
 				],
 			},
