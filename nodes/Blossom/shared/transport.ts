@@ -124,8 +124,23 @@ Common issues:
 - Make sure the Blossom instance URL is correct
 - Verify the endpoint path is correct`);
 		} else if (error.response?.status >= 500) {
+			console.log('500 Error Details:', {
+				status: error.response.status,
+				statusText: error.response.statusText,
+				data: error.response.data,
+				headers: error.response.headers,
+				request: {
+					method: options.method,
+					url: options.url,
+					body: options.body,
+					headers: options.headers
+				}
+			});
 			throw new Error(`Server error (${error.response.status}). The Blossom server is experiencing issues.
 - Base URL: ${cleanBaseUrl}
+- Status: ${error.response.status}
+- Status Text: ${error.response.statusText}
+- Response Data: ${JSON.stringify(error.response.data)}
 - Try again later or contact your Blossom administrator`);
 		} else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
 			throw new Error(`Connection failed. Please check:
