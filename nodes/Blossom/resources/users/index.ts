@@ -26,6 +26,12 @@ export const usersDescription: INodeProperties[] = [
 				action: 'Delete users from CSV',
 			},
 			{
+				name: 'Detach User From OU',
+				value: 'detachUserFromOu',
+				description: 'Detach user from its only OU',
+				action: 'Detach user from OU',
+			},
+			{
 				name: 'Import Users CSV',
 				value: 'importUsersCSV',
 				description: 'Import multiple users using CSV/Excel',
@@ -61,7 +67,7 @@ export const usersDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForUsers,
-				operation: ['updateUser', 'deleteUser', 'importUsersCSV', 'deleteUsersCSV', 'setAvatar'],
+				operation: ['updateUser', 'deleteUser', 'importUsersCSV', 'deleteUsersCSV', 'setAvatar', 'detachUserFromOu'],
 			},
 		},
 		description: 'Domain ID or name',
@@ -85,6 +91,27 @@ export const usersDescription: INodeProperties[] = [
 				name: 'details',
 				displayName: 'Details',
 				values: [
+					{
+						displayName: 'חטיבה',
+						name: 'חטיבה',
+						type: 'string',
+						default: '',
+						description: 'Division/Unit in Hebrew',
+					},
+					{
+						displayName: 'קבלן	משרדי',
+						name: 'קבלן	משרדי',
+						type: 'string',
+						default: '',
+						description: 'Office contractor in Hebrew',
+					},
+					{
+						displayName: 'קבלן	שטח',
+						name: 'קבלן	שטח',
+						type: 'string',
+						default: '',
+						description: 'Field contractor in Hebrew',
+					},
 					{
 						displayName: 'About',
 						name: 'about',
@@ -184,6 +211,13 @@ export const usersDescription: INodeProperties[] = [
 						description: 'User gender',
 					},
 					{
+						displayName: 'ID',
+						name: 'id',
+						type: 'string',
+						default: '',
+						description: 'Internal user ID',
+					},
+					{
 						displayName: 'Job Title',
 						name: 'job_title',
 						type: 'string',
@@ -259,7 +293,7 @@ export const usersDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				...showOnlyForUsers,
-				operation: ['deleteUser', 'setAvatar'],
+				operation: ['deleteUser', 'setAvatar', 'detachUserFromOu'],
 			},
 		},
 		options: [

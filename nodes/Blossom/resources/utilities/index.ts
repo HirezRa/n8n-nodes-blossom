@@ -48,7 +48,10 @@ export const utilitiesDescription: INodeProperties[] = [
 		default: '1',
 		required: true,
 		displayOptions: {
-			show: showOnlyForUtilities,
+			show: {
+				...showOnlyForUtilities,
+				operation: ['removeEmptyOrgUnits'],
+			},
 		},
 		description: 'Domain name or ID',
 	},

@@ -155,7 +155,7 @@ export const managersDescription: INodeProperties[] = [
 	},
 	{
 		displayName: 'Set Primary',
-		name: 'setPrimary',
+		name: 'set_primary',
 		type: 'options',
 		options: [
 			{
@@ -184,8 +184,8 @@ export const managersDescription: INodeProperties[] = [
 		description: 'Manager role type',
 	},
 	{
-		displayName: 'Power Manager Type',
-		name: 'powerManagerType',
+		displayName: 'Type',
+		name: 'type',
 		type: 'options',
 		options: [
 			{
@@ -228,32 +228,32 @@ export const managersDescription: INodeProperties[] = [
 				displayName: 'Authority',
 				values: [
 					{
-						displayName: 'HR Manager',
-						name: 'hr_manager',
+						displayName: 'HR Manager ID',
+						name: 'user_hr_manager_id',
 						type: 'string',
 						default: '',
-						description: 'Human resources coordinator (external_id or user_id=123)',
+						description: 'Human resources coordinator ID (external_id or user_id=123)',
 					},
 					{
-						displayName: 'Professional Manager',
-						name: 'professional_manager',
+						displayName: 'Professional Manager ID',
+						name: 'user_professional_manager_id',
 						type: 'string',
 						default: '',
-						description: 'Professional manager (external_id or user_id=123)',
+						description: 'Professional manager ID (external_id or user_id=123)',
 					},
 					{
-						displayName: 'Coach',
-						name: 'coach',
+						displayName: 'Coach ID',
+						name: 'user_coach_id',
 						type: 'string',
 						default: '',
-						description: 'Personal coach (external_id or user_id=123)',
+						description: 'Personal coach ID (external_id or user_id=123)',
 					},
 					{
-						displayName: 'Supervisor',
-						name: 'supervisor',
+						displayName: 'Supervisor ID',
+						name: 'user_auth_supervisor_id',
 						type: 'string',
 						default: '',
-						description: 'Supervisor (external_id or user_id=123)',
+						description: 'Supervisor ID (external_id or user_id=123)',
 					},
 				],
 			},
