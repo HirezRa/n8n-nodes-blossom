@@ -38,7 +38,19 @@ export async function blossomApiRequest(
 		url: `${cleanBaseUrl}/${cleanEndpoint}`,
 		json: !body || typeof body === 'object' && !body.sheet_file && !body.avatarfile && !body.diploma_file,
 		timeout: 30000,
+		headers: {
+			'Content-Type': 'application/json',
+		},
 	};
+
+	// Debug logging
+	console.log('Blossom API Request:', {
+		method,
+		url: `${cleanBaseUrl}/${cleanEndpoint}`,
+		body: body ? JSON.stringify(body, null, 2) : 'No body',
+		authType,
+		json: options.json
+	});
 
 	// Add authentication based on type
 	if (authType === 'basic') {
