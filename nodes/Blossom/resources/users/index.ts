@@ -86,27 +86,6 @@ export const usersDescription: INodeProperties[] = [
 				displayName: 'Details',
 				values: [
 					{
-						displayName: 'חטיבה',
-						name: 'חטיבה',
-						type: 'string',
-						default: '',
-						description: 'Division/Unit in Hebrew',
-					},
-					{
-						displayName: 'קבלן משרדי',
-						name: 'קבלן משרדי',
-						type: 'string',
-						default: '',
-						description: 'Office contractor in Hebrew',
-					},
-					{
-						displayName: 'קבלן שטח',
-						name: 'קבלן שטח',
-						type: 'string',
-						default: '',
-						description: 'Field contractor in Hebrew',
-					},
-					{
 						displayName: 'About',
 						name: 'about',
 						type: 'string',
@@ -186,7 +165,7 @@ export const usersDescription: INodeProperties[] = [
 						name: 'firstname',
 						type: 'string',
 						default: '',
-						required: true,
+							required:	true,
 						description: 'User first name (required)',
 					},
 					{
@@ -224,7 +203,7 @@ export const usersDescription: INodeProperties[] = [
 						name: 'lastname',
 						type: 'string',
 						default: '',
-						required: true,
+							required:	true,
 						description: 'User last name (required)',
 					},
 					{
@@ -233,7 +212,7 @@ export const usersDescription: INodeProperties[] = [
 						type: 'string',
 						typeOptions: { password: true },
 						default: '',
-						required: true,
+							required:	true,
 						description: 'User password (required)',
 					},
 					{
@@ -270,7 +249,7 @@ export const usersDescription: INodeProperties[] = [
 						name: 'username',
 						type: 'string',
 						default: '',
-						required: true,
+							required:	true,
 						description: 'Username (required)',
 					},
 					{
