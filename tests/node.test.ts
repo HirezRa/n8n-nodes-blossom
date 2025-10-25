@@ -11,7 +11,7 @@ describe('Blossom Node', () => {
 		const node = new Blossom();
 		expect(node.description.credentials).toBeDefined();
 		expect(node.description.credentials?.length).toBe(1);
-		expect(node.description.credentials?.[0].name).toBe('blossomApi');
+		expect(node.description.credentials?.[0].name).toBe('blossomSyncApi');
 		expect(node.description.credentials?.[0].required).toBe(true);
 	});
 
