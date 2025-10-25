@@ -1,11 +1,17 @@
 # n8n-nodes-blossom
 
-A comprehensive n8n community node for integrating with Blossom Learning Management System (LMS) API. This node provides full access to the Blossom Sync API V2, supporting all operations for users, groups, memberships, utilities, suppliers, and performance data.
+A comprehensive n8n community node for integrating with Blossom Sync API V2. This node provides full access to the Blossom synchronization service, supporting all 29 documented operations for users, groups, memberships, managers, suppliers, performances, and system utilities.
+
+## About Blossom Sync API V2
+
+The Blossom Sync API V2 is a WebService for synchronizing objects (users/groups/suppliers) with a unified pattern: identification by external_id, support for GET (querystring) and POST (JSON), and CSV/Excel batch methods with a cap of 4 calls per 24 hours for each CSV method. There's a general rate limit of 30 requests per second.
 
 ## Features
 
-- **Complete API Coverage**: Supports all Blossom Sync API V2 operations
-- **Multiple Authentication Methods**: Basic Auth, API Key, JWT, and OAuth 2.0
+- **Complete API Coverage**: Supports all 29 documented Blossom Sync API V2 operations
+- **Multiple Authentication Methods**: Basic Auth (default), JWT, and OAuth 2.0 (server must enable JWT/OAuth2)
+- **Rate Limiting**: Built-in throttling to respect the 30 requests/second limit
+- **CSV Batch Operations**: Support for bulk operations with 4 calls per 24 hours limit per CSV method
 - **User Management**: Create, update, delete users and bulk import/export via CSV
   - Complete user profiles with all available fields (gender, employment_date, about, user_nt, etc.)
   - Avatar management (upload/remove)
@@ -27,6 +33,26 @@ A comprehensive n8n community node for integrating with Blossom Learning Managem
 - **File Upload Support**: Handle CSV imports, avatar uploads, and diploma uploads
 - **Generic API Access**: Make custom requests to any Blossom API endpoint
 - **Comprehensive Error Handling**: Detailed error messages and validation
+
+## Recommended Sync Order
+
+For optimal synchronization, follow this order:
+
+1. **DeleteUsersCSV** → Clean up old users
+2. **ImportUsersCSV** → Import/update users
+3. **ImportGroupsCSV** → Import/update groups
+4. **ImportGroupsMembersCSV** → Assign users to groups
+5. **RunAutoEnrollmentRules** → Apply enrollment rules (run off-hours)
+6. **RemoveEmptyOrgUnits** → Clean up empty organizational units
+
+## Rate Limits & Best Practices
+
+- **Rate Limit**: 30 requests per second (node throttles to 25 rps for safety)
+- **CSV Limits**: 4 calls per 24 hours for each CSV method
+- **Heavy Operations**: Run `RunAutoEnrollmentRules` and `RunScheduledImports` during off-hours
+- **File Formats**: CSV files must be UTF-8 RFC-4180/TSV format
+- **Date Format**: Use yyyy-mm-dd for all date fields
+- **Checkbox Format**: Use 1 or 0 for boolean values
 
 ## Installation
 
@@ -246,8 +272,11 @@ The node supports multiple authentication methods:
 - **Import Assignment Performances CSV**: Import assignment performance data
 - **Import Group Performances CSV**: Import group performance data for qualifications and courses
 
-### Generic API
-- **Make Request**: Make custom API requests to any Blossom endpoint
+### System Operations (4)
+- **Test**: Test connection and get server info
+- **Run Auto Enrollment Rules**: Apply enrollment rules (run off-hours)
+- **Run Scheduled Imports**: Execute scheduled imports (run off-hours)
+- **Remove Empty Org Units**: Clean up empty organizational units
 
 ## Usage Examples
 
@@ -287,9 +316,11 @@ The node supports multiple authentication methods:
 ```
 
 **Configuration Notes:**
-- **Base URL**: Replace `YOUR-COMPANY` with your organization's subdomain (e.g., `https://mer-group.blossom-kc.com/`)
-- **Domain**: Configure in credentials (e.g., '1' or 'company-name')
+- **Base URL**: Replace `YOUR-COMPANY` with your organization's subdomain (e.g., `https://mer-group.blossom-kc.com/WebServices/sync_2`)
+- **Domain**: Required for most operations (e.g., '1' or 'company-name')
 - **Credentials**: Use your API user credentials, not your login credentials
+- **Rate Limits**: Node throttles to 25 rps (API limit is 30 rps)
+- **CSV Limits**: 4 calls per 24 hours for each CSV method
 
 ### 2. CSV Import with Options
 

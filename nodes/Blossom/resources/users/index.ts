@@ -165,8 +165,7 @@ export const usersDescription: INodeProperties[] = [
 						name: 'firstname',
 						type: 'string',
 						default: '',
-							required:	true,
-						description: 'User first name (required)',
+						description: 'User first name',
 					},
 					{
 						displayName: 'Gender',
@@ -203,8 +202,7 @@ export const usersDescription: INodeProperties[] = [
 						name: 'lastname',
 						type: 'string',
 						default: '',
-							required:	true,
-						description: 'User last name (required)',
+						description: 'User last name',
 					},
 					{
 						displayName: 'Password',
@@ -212,8 +210,7 @@ export const usersDescription: INodeProperties[] = [
 						type: 'string',
 						typeOptions: { password: true },
 						default: '',
-							required:	true,
-						description: 'User password (required)',
+						description: 'User password',
 					},
 					{
 						displayName: 'Phone (Business)',
@@ -249,8 +246,7 @@ export const usersDescription: INodeProperties[] = [
 						name: 'username',
 						type: 'string',
 						default: '',
-							required:	true,
-						description: 'Username (required)',
+
 					},
 					{
 						displayName: 'ZIP Code',
