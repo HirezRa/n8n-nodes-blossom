@@ -32,7 +32,7 @@ export class Blossom implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
-				name: 'blossomApi',
+				name: 'blossomSyncApi',
 				required: true,
 			},
 		],

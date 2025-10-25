@@ -7,9 +7,9 @@ import type {
 } from 'n8n-workflow';
 
 export class BlossomApi implements ICredentialType {
-	name = 'blossomApi';
+	name = 'blossomSyncApi';
 
-	displayName = 'Blossom API';
+	displayName = 'Blossom Sync API';
 
 	icon: Icon = { light: 'file:../icons/blossom.svg', dark: 'file:../icons/blossom.dark.svg' };
 
@@ -20,52 +20,32 @@ export class BlossomApi implements ICredentialType {
 			displayName: 'Base URL',
 			name: 'baseUrl',
 			type: 'string',
-			default: '',
-			placeholder: 'https://YOUR-COMPANY.blossom-kc.com/WebServices/sync_2',
+			default: 'https://blossom-kc.com/WebServices/sync_2',
+			placeholder: 'https://blossom-kc.com/WebServices/sync_2',
 			required: true,
-			description: 'The full API URL of your Blossom instance. Replace YOUR-COMPANY with your organization\'s subdomain (e.g., https://mer-group.blossom-kc.com/WebServices/sync_2)',
+			description: 'The full API URL of your Blossom instance',
 		},
 		{
-			displayName: 'Authentication Type',
-			name: 'authType',
+			displayName: 'Auth Method',
+			name: 'authMethod',
 			type: 'options',
 			options: [
-				{
-					name: 'Basic Auth',
-					value: 'basic',
-					description: 'Use username and password for Basic Authentication',
-				},
-				{
-					name: 'API Key',
-					value: 'apiKey',
-					description: 'Use API key for authentication',
-				},
-				{
-					name: 'JWT',
-					value: 'jwt',
-					description: 'Use JWT token for authentication',
-				},
-				{
-					name: 'OAuth 2.0',
-					value: 'oauth2',
-					description: 'Use OAuth 2.0 for authentication',
-				},
+				{ name: 'Basic', value: 'basic' },
+				{ name: 'JWT (Server must enable)', value: 'jwt' },
+				{ name: 'OAuth2 (Server must enable)', value: 'oauth2' },
 			],
 			default: 'basic',
-			description: 'The authentication method to use',
+			description: 'JWT/OAuth2 are disabled by default on server side.',
 		},
+		// Basic
 		{
 			displayName: 'Username',
 			name: 'username',
 			type: 'string',
 			default: '',
+			typeOptions: { alwaysOpenEditWindow: true },
+			displayOptions: { show: { authMethod: ['basic'] } },
 			required: true,
-			displayOptions: {
-				show: {
-					authType: ['basic'],
-				},
-			},
-			description: 'Your API user credentials (not your login credentials)',
 		},
 		{
 			displayName: 'Password',
@@ -73,68 +53,34 @@ export class BlossomApi implements ICredentialType {
 			type: 'string',
 			typeOptions: { password: true },
 			default: '',
+			displayOptions: { show: { authMethod: ['basic'] } },
 			required: true,
-			displayOptions: {
-				show: {
-					authType: ['basic'],
-				},
-			},
-			description: 'Your API user password (not your login password)',
 		},
+		// JWT (optional)
 		{
-			displayName: 'Domain',
-			name: 'domain',
+			displayName: 'JWT Issuer (iss)',
+			name: 'jwtIss',
 			type: 'string',
-			default: '1',
-			required: true,
-			displayOptions: {
-				show: {
-					authType: ['basic'],
-				},
-			},
-			description: 'Domain name or ID (e.g., \'1\' or \'company-name\'). Check with your Blossom admin.',
-		},
-		{
-			displayName: 'API Key',
-			name: 'apiKey',
-			type: 'string',
-			typeOptions: { password: true },
 			default: '',
-			required: true,
-			displayOptions: {
-				show: {
-					authType: ['apiKey'],
-				},
-			},
-			description: 'Your API key for authentication',
+			displayOptions: { show: { authMethod: ['jwt'] } },
 		},
 		{
-			displayName: 'JWT Token',
-			name: 'jwtToken',
+			displayName: 'JWT Secret (server password)',
+			name: 'jwtSecret',
 			type: 'string',
-			typeOptions: { password: true },
 			default: '',
-			required: true,
-			displayOptions: {
-				show: {
-					authType: ['jwt'],
-				},
-			},
-			description: 'JWT token for authentication. Generate using: {"iss":"<user_name>","exp":<unix_timestamp>}',
+			typeOptions: { password: true },
+			displayOptions: { show: { authMethod: ['jwt'] } },
 		},
+		// OAuth2 (optional, token-only endpoint)
 		{
-			displayName: 'OAuth 2.0 Token',
-			name: 'oauth2Token',
+			displayName: 'Auth Token',
+			name: 'authToken',
 			type: 'string',
-			typeOptions: { password: true },
 			default: '',
-			required: true,
-			displayOptions: {
-				show: {
-					authType: ['oauth2'],
-				},
-			},
-			description: 'OAuth 2.0 access token. Get from: {{baseUrl}}/WebServices/sync_2?auth_token',
+			typeOptions: { password: true },
+			displayOptions: { show: { authMethod: ['oauth2'] } },
+			description: 'Acquire token via ?auth_token when server enables OAuth2',
 		},
 	];
 
@@ -144,9 +90,6 @@ export class BlossomApi implements ICredentialType {
 			auth: {
 				username: '={{$credentials.username}}',
 				password: '={{$credentials.password}}',
-			},
-			headers: {
-				'Content-Type': 'application/json',
 			},
 		},
 	};

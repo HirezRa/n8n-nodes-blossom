@@ -1,0 +1,832 @@
+Executive Summary
+
+Blossom Sync API v2 הוא WebService סינכרון אובייקטים (משתמשים/קבוצות/חברות/ספקים) עם דפוס אחיד: זיהוי לפי external_id, תמיכה ב־GET (querystring) וב־POST (JSON), ומתודות CSV/Excel לאצווה עם cap של 4 קריאות ב־24 שעות לכל CSV method. קיים Rate Limit כללי של 30 בקשות לשנייה. לצורך אינטגרציית n8n: נבנה node יחיד עם Resources ו־Operations תואמים, תמיכה במצבי הזדהות (Basic—ברירת מחדל; הכנה ל־JWT/OAuth2), כלי עזר ל־identifier strings, ומסלולי עבודה מוכנים. 
+
+Blossom_Sync_Api_V2 WebService …
+
+1) Discovery Phase — סריקה וקטלוג (קצר ולעניין אך ממצה)
+פרטי שירות, אימות, ומגבלות
+
+Base URL / Endpoint URI: https://blossom-kc.com/WebServices/sync_2 (גרסה 2.0). 
+
+Blossom_Sync_Api_V2 WebService …
+
+Auth נתמך: Basic (פעיל), JWT (מושבת כברירת מחדל; עם אלגוריתמים ES256/HS256/HS384/HS512/RS256/RS384/RS512), OAuth 2.0 (מושבת). Token אפשר לקבל ב־?auth_token כאשר OAuth2 מופעל. אין Refresh Tokens. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Rate Limit: 30 req/sec. 
+
+Blossom_Sync_Api_V2 WebService …
+
+שיטות CSV/XLSX: קלט כ־sheet_file (multipart) או בקובץ בבקשת ה־body; מקסימום 4 קריאות ב־24 שעות לכל מתודת CSV. סדר מומלץ בסינכרון:
+
+DeleteUsersCSV → 2) ImportUsersCSV → 3) ImportGroupsCSV → 4) ImportGroupsMembersCSV. 
+
+Blossom_Sync_Api_V2 WebService …
+
+מזהה מרכזי: external_id (במשתמשים וקבוצות). הרבה מתודות תומכות גם בפורמט מזהה "זוגי" כמו user_id=123,user_name=abc או group_id=123,group_external_id=a456. 
+
+Blossom_Sync_Api_V2 WebService …
+
+פורמטי שדות: תאריכים yyyy-mm-dd; Checkbox כ־1/0; CSV UTF-8 RFC-4180/TSV. 
+
+Blossom_Sync_Api_V2 WebService …
+
+מבנה תגובה: JSON, בדרך כלל { "res": "success" } או { "res":"error", "error_msg": "..." }. חלק מ־CSV methods מחזירים results[] ברמת שורה עם issues. קודי שגיאה 4xx/5xx. 
+
+Blossom_Sync_Api_V2 WebService …
+
+מתודות (Endpoints) — תיעוד ממופה
+
+להלן תמצות תפעולי עם פרמטרים עיקריים ודגשים. (כל הפרטים המפורטים במסמך — לרבות דוגמאות CURL/JSON, שמות שדות מלאים ואזהרות — נכללו בתכנון ה־node ותעודדו דרך options בטפסי ה־n8n). 
+
+Blossom_Sync_Api_V2 WebService …
+
+Users
+
+UpdateUser — יצירה/עדכון משתמש.
+פרמטרים: domain (חובה), details (JSON או querystring) עם שדות כגון: external_id, username, firstname, lastname, password, email, gender, company, department, employment_date, job_title, ... + כל custom fields לפי name/id/key. תאריכים yyyy-mm-dd, checkbox 1/0. 
+
+Blossom_Sync_Api_V2 WebService …
+
+
+תגובה: JSON הצלחה/כישלון. GET מחייב URL-encoding. 
+
+Blossom_Sync_Api_V2 WebService …
+
+DeleteUser — מחיקה (soft-delete). מזהה משתמש כ־external_id או זוג מזהים. עדכון/ייבוא עתידי משחזר משתמש שנמחק. 
+
+Blossom_Sync_Api_V2 WebService …
+
+DeleteUsersCSV — מחיקת משתמשים באצווה (soft). אין אזהרה על משתמש שכבר נמחק/לא קיים. עדכון/ייבוא משחזר. limit 4/24h. קלט: sheet_file. תגובת results[]. 
+
+Blossom_Sync_Api_V2 WebService …
+
+ImportUsersCSV — יבוא משתמשים באצווה. Options:
+keep_old_values, temp_password, new_user_notification, password_not_required (SSO only), manager_ou, clean_ou. ב־manager_ou=1 נדרשים עמודות manager_ou, ou_name ליצירת היררכיה. limit 4/24h. תגובת results[]. 
+
+Blossom_Sync_Api_V2 WebService …
+
+AvatarSet (REST/POST) — עדכון/הסרה של תמונת פרופיל: avatarfile (jpg/png) או body (jpg). remove_avatar=1 להסרה. 
+
+Blossom_Sync_Api_V2 WebService …
+
+DetachUserFromOu — ניתוק משתמש מיחידת הארגון היחידה שלו. מזהי משתמש כרגיל. 
+
+Blossom_Sync_Api_V2 WebService …
+
+UserAuthorities — שיבוץ סמכויות למשתמש: user_hr_manager_id, user_professional_manager_id, user_coach_id, user_auth_supervisor_id. ערכים: external_id או user_id=.... ערך ריק מנקה. לא מצוין → לא משתנה. 
+
+Blossom_Sync_Api_V2 WebService …
+
+PowerManager — קביעת משתמש כ־PowerManager או User. 
+
+Blossom_Sync_Api_V2 WebService …
+
+UploadDiploma (REST/POST) — העלאה/הסרה של דיפלומה למשתמש בתוך Group: קובץ diploma_file, remove_diploma=1 להסרה. מזהה user + group כנ״ל. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Groups / Workspaces / OU / Templates / Qualifications / Workplans
+
+UpdateGroup — יצירה/עדכון אובייקט קבוצה/קורס/OU/Role/Template/Qualification/Workplan. details: name, description, external_id, open_date, close_date, passing_grade, ... classification, parent_external_id, template_external_id, flags hide_* וכו׳. 
+
+Blossom_Sync_Api_V2 WebService …
+
+ImportGroupsCSV — יבוא קבוצות/Workspaces באצווה. Options:
+keep_old_values, manager_type ('all'/'none' או permission name), override_existing_permissions, remove_existing_managers, set_primary_manager. limit 4/24h. results[]. 
+
+Blossom_Sync_Api_V2 WebService …
+
+DeleteGroup — מחיקת קבוצה לפי group_id או group_external_id. 
+
+Blossom_Sync_Api_V2 WebService …
+
+AttachSubGroup / DetachSubGroup — שיוך/ניתוק תת־קבוצה להורה (סוגים זהים). 
+
+Blossom_Sync_Api_V2 WebService …
+
+AttachInstance / DetachInstance — שיוך/ניתוק Group/ Course ל־Template. 
+
+Blossom_Sync_Api_V2 WebService …
+
+AttachUserToGroup / DetachUserFromGroup — שיוך/ניתוק משתמש לקבוצה (כולל Qualification/Workplan/OU). 
+
+Blossom_Sync_Api_V2 WebService …
+
+AttachManager / DetachManager — מנהלים לקבוצה. manager_type או all/none. set_primary: 1 להצבה כ־primary; 2 להסרה+primary; אחרת 0. 
+
+Blossom_Sync_Api_V2 WebService …
+
+ImportGroupsMembersCSV — שיוך משתמשים ל־Workspaces באצווה. Option: clean_ou. limit 4/24h. results[]. 
+
+Blossom_Sync_Api_V2 WebService …
+
+RemoveEmptyOrgUnits — ניקוי יחידות ארגוניות ריקות (כמו clean_ou=1 ב־Import Users/Members). 
+
+Blossom_Sync_Api_V2 WebService …
+
+Suppliers
+
+UpdateSupplier — יצירה/עדכון ספק לפי external_id. type (ל־RegExt), ושדות: name, address, email, phone, fax, contact, business_number, supplier_number, external_id. 
+
+Blossom_Sync_Api_V2 WebService …
+
+DeleteSupplier — מחיקת ספק לפי ext_id. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Performances
+
+ImportAssignmentPerformancesCSV — יבוא ביצועי משימות (assignment) באצווה. תגובת results[] עם שגיאות כגון כפילויות לפי תאריך, או מזהים חסרים. limit מובנה לכל CSV (4/24h). 
+
+Blossom_Sync_Api_V2 WebService …
+
+ImportGroupPerformancesCSV — יבוא ביצועים לקורסים/כשירויות. results[]. 
+
+Blossom_Sync_Api_V2 WebService …
+
+System jobs
+
+RunAutoEnrollmentRules — להרצה אחרי עדכוני משתמשים/קבוצות; מומלץ מחוץ לשעות עבודה. limit 4/24h. 
+
+Blossom_Sync_Api_V2 WebService …
+
+RunScheduledImports — הרצת imports מתוזמנים (לא בחצות — כי זה רץ בכל מקרה בחצות). limit 4/24h. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Test — פינג בדיקה — מחזיר פרוטוקול ומספר אקראי. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Error Handling מיוחד
+
+תבנית שגיאה: { "res":"error", "error_msg":"..." } עם 4xx/5xx. יש הודעת שגיאה ספציפית לתיקון נתיב (platform/ באמצע ה־URL). 
+
+Blossom_Sync_Api_V2 WebService …
+
+2) Pattern Analysis — דפוסים, קשרים, עקביות/אי־עקביות
+
+דפוסים עקביים:
+
+מזהי אובייקטים: תמיד קיימת תמיכה ב־external_id, ובמרבית המקומות גם ב־identifier pair (למשל user_id=...,user_name=...). זה מאפשר גמישות במיפוי מול מערכות זרות. 
+
+Blossom_Sync_Api_V2 WebService …
+
+צורת קריאה כפולה: כמעט כל מתודה תומכת גם ב־GET (querystring) וגם ב־POST (JSON), עם אותה סכימת פרמטרים לוגית. 
+
+Blossom_Sync_Api_V2 WebService …
+
+תבנית תגובה: res: success|error + results[] באצוות CSV עם row, issues, status_error/warning. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Soft delete: מחיקת משתמשים אינה מוחקת פיזית; Import/Update ישחזר. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Rate/Quota: limit גלובלי 30 rps; limit אצווה 4/24h למתודות CSV/Runs. 
+
+Blossom_Sync_Api_V2 WebService …
+
+אי־עקביות/פינות:
+
+שמות שדות בעברית מופיעים ברשימת UpdateUser (למשל חטיבה, קבלן שטח, קבלן משרדי). נדרש טיפול Unicode מלא בשמות עמודות/שדות מותאמים. 
+
+Blossom_Sync_Api_V2 WebService …
+
+בשדות manager_type יש גם ערכים שמיים (all/none) וגם שמות הרשאה — מחייב ולידציה צד־לקוח. 
+
+Blossom_Sync_Api_V2 WebService …
+
+חלק מה־file endpoints דורשים multipart (avatarfile, diploma_file, sheet_file), אחרים JSON; חשוב להבדיל. 
+
+Blossom_Sync_Api_V2 WebService …
+
+3) Semantic Analysis — לוגיקה עסקית וכוונות
+
+Domain-first: כמעט כל הקריאות דורשות domain (שם או מזהה). זהו גבול רב־דומייני פנימי למערכת. 
+
+Blossom_Sync_Api_V2 WebService …
+
+סנכרון היררכיות:
+
+Groups/OU/Template/Qualification/Workplan הם אובייקטים עם יחסים היררכיים (Attach/Detach SubGroup/Instance).
+
+manager_ou=1 מייצר עץ OU אוטומטי לפי manager_ou/ou_name. 
+
+Blossom_Sync_Api_V2 WebService …
+
+ניהול תפקידים/סמכויות: AttachManager / UserAuthorities מממשים מודל סמכויות מבוסס משתמשים קיימים. 
+
+Blossom_Sync_Api_V2 WebService …
+
+תהליכי עיבוד כבדים: RunAutoEnrollmentRules ו־RunScheduledImports — יש להריץ מחוץ לשעות עומס; שימושי לסגירת פערי הרשאות/חברות אחרי bulk sync. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Data Governance: keep_old_values/clean_ou מגינים מפני מחיקות בלתי־רצויות/יתמות OU. soft-delete מאפשר שחזור. 
+
+Blossom_Sync_Api_V2 WebService …
+
+4) n8n Mapping — מיפוי מלא ל־n8n Node
+מבנה לוגי מוצע
+
+Resources:
+
+user — Update, Delete, DeleteCSV, ImportCSV, AvatarSet, DetachFromOu, Authorities, PowerManager, UploadDiploma (עם group)
+
+group — Update, Delete, ImportCSV, AttachSubGroup, DetachSubGroup, AttachInstance, DetachInstance
+
+membership — AttachUserToGroup, DetachUserFromGroup, ImportGroupsMembersCSV
+
+manager — AttachManager, DetachManager
+
+supplier — UpdateSupplier, DeleteSupplier
+
+performance — ImportAssignmentPerformancesCSV, ImportGroupPerformancesCSV
+
+system — RunAutoEnrollmentRules, RunScheduledImports, RemoveEmptyOrgUnits, Test
+
+Operations: לכל מתודה — Operation. פרמטרים:
+
+domain (Number/String) — חובה (ברובם).
+
+Identifiers: פרמטר typed builder:
+
+User Identifier: אחד מ־external_id או Key-Value builder: user_id, user_name, identity_num.
+
+Group Identifier: group_external_id או group_id.
+
+Options / Details: JSON Editor + fields UI שכיחים.
+
+File upload: Binary property (n8n) בשם sheet_file/avatarfile/diploma_file.
+
+Method: GET (querystring) או POST (JSON/multipart) — נבחר אוטומטית לפי operation.
+
+מיפוי תשובות:
+
+Standardize ל־ { res, error_msg?, results? } ולהציג issues בטבלה אם קיימות.
+
+5) Intelligence Layer — המלצות, אופטימיזציה ו־Future-Proofing
+ביצועים
+
+העדפת CSV לאצווה: לצמצום Latency/Overhead השתמשו ב־Import/Delete CSV כאשר יש עשרות+ רשומות. (limit 4/24h לכל CSV!). 
+
+Blossom_Sync_Api_V2 WebService …
+
+Throttle לרמה של ≤ 25 rps בנוד (buffer ל־30 rps). הקפידו על Backoff בשגיאות 429/5xx. 
+
+Blossom_Sync_Api_V2 WebService …
+
+סדר סנכרון: DeleteUsersCSV → ImportUsersCSV → ImportGroupsCSV → ImportGroupsMembersCSV → RunAutoEnrollmentRules. 
+
+Blossom_Sync_Api_V2 WebService …
+
+נקו OU: הריצו RemoveEmptyOrgUnits אחרי פעולות clean_ou/Imports משולבים. 
+
+Blossom_Sync_Api_V2 WebService …
+
+אבטחה
+
+Basic Auth: שמרו סודיות ב־n8n Credentials.
+
+JWT/OAuth2 Disabled כברירת מחדל — השאירו toggle ב־node לשימוש עתידי אם יופעל שרתית; JWT דורש payload iss/exp עם key=הסיסמה; OAuth2 token דרך ?auth_token. ללא refresh tokens. 
+
+Blossom_Sync_Api_V2 WebService …
+
+PII: הקפידו על מינימיזציה/מסכות ל־identity_num, טלפונים, כתובות.
+
+Uploads: קבלו רק סיומות (.csv/.xlsx/.jpg/.png) והגבילו גודל.
+
+עלויות/תפעול
+
+כמות ריצות כבדות (RunAutoEnrollmentRules, imports מתוזמנים) — להריץ off-hours; להימנע מכפילויות (ה־API אף מציין זאת). 
+
+Blossom_Sync_Api_V2 WebService …
+
+ניטור: לוגים ל־results[] ו־issues מכל CSV לשמירת תחקיר.
+
+Future-Proofing
+
+Abstract Auth: ממשו client גנרי שתומך Basic/JWT/OAuth2 מבלי לשנות את שאר הקוד. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Dynamic fields: תמיכה ב־custom fields ב־UpdateUser לפי name/id/key. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Error Message Patterns: תפסו הודעה מיוחדת על platform/ ב־URL ותקנו אוטומטית. 
+
+Blossom_Sync_Api_V2 WebService …
+
+TypeScript — n8n Credentials, Generic Client & Node Description
+
+הקוד שלהלן הוא בסיס מוצק ל־node מותאם, עם דוגמאות מלאות. ניתן להעתיק ישירות לפרויקט n8n Custom Nodes (מבנה קבצים סטנדרטי).
+
+// credentials/BlossomSyncApi.credentials.ts
+import {
+	ICredentialType,
+	INodeProperties,
+} from 'n8n-workflow';
+
+export class BlossomSyncApi implements ICredentialType {
+	name = 'blossomSyncApi';
+	displayName = 'Blossom Sync API';
+	documentationUrl = ''; // optional
+	properties: INodeProperties[] = [
+		{
+			displayName: 'Base URL',
+			name: 'baseUrl',
+			type: 'string',
+			default: 'https://blossom-kc.com/WebServices/sync_2',
+			placeholder: 'https://.../WebServices/sync_2',
+			required: true,
+		},
+		{
+			displayName: 'Auth Method',
+			name: 'authMethod',
+			type: 'options',
+			options: [
+				{ name: 'Basic', value: 'basic' },
+				{ name: 'JWT (Server must enable)', value: 'jwt' },
+				{ name: 'OAuth2 (Server must enable)', value: 'oauth2' },
+			],
+			default: 'basic',
+			description: 'JWT/OAuth2 are disabled by default on server side.',
+		},
+		// Basic
+		{
+			displayName: 'Username',
+			name: 'username',
+			type: 'string',
+			default: '',
+			typeOptions: { alwaysOpenEditWindow: true },
+			displayOptions: { show: { authMethod: ['basic'] } },
+			required: true,
+		},
+		{
+			displayName: 'Password',
+			name: 'password',
+			type: 'string',
+			typeOptions: { password: true },
+			default: '',
+			displayOptions: { show: { authMethod: ['basic'] } },
+			required: true,
+		},
+		// JWT (optional)
+		{
+			displayName: 'JWT Issuer (iss)',
+			name: 'jwtIss',
+			type: 'string',
+			default: '',
+			displayOptions: { show: { authMethod: ['jwt'] } },
+		},
+		{
+			displayName: 'JWT Secret (server password)',
+			name: 'jwtSecret',
+			type: 'string',
+			default: '',
+			typeOptions: { password: true },
+			displayOptions: { show: { authMethod: ['jwt'] } },
+		},
+		// OAuth2 (optional, token-only endpoint)
+		{
+			displayName: 'Auth Token',
+			name: 'authToken',
+			type: 'string',
+			default: '',
+			typeOptions: { password: true },
+			displayOptions: { show: { authMethod: ['oauth2'] } },
+			description: 'Acquire token via ?auth_token when server enables OAuth2',
+		},
+	];
+}
+
+// transport/BlossomClient.ts
+import type {
+	IExecuteFunctions,
+	IHookFunctions,
+	ILoadOptionsFunctions,
+	IRequestOptions,
+} from 'n8n-workflow';
+import { NodeApiError } from 'n8n-workflow';
+
+type Ctx = IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions;
+
+export async function blossomRequest(
+	this: Ctx,
+	method: 'GET' | 'POST',
+	path: string,
+	body?: any,
+	query?: Record<string, any>,
+	isMultipart = false,
+	binaryPropertyName?: string, // for file uploads
+	itemIndex = 0,
+) {
+	const creds = await this.getCredentials('blossomSyncApi');
+	let url = `${creds.baseUrl}`.replace(/\/+$/, '') + '/' + path.replace(/^\/+/, '');
+
+	// Auto-fix known server path issue (platform/)
+	url = url.replace('/platform/', '/');
+
+	const options: IRequestOptions = {
+		method,
+		url,
+		headers: {},
+		retry: { maxAttempts: 3, // exponential backoff
+			delay: 500,
+			multiply: 2,
+			statusCodes: [429, 500, 502, 503, 504],
+			onFail: (_res) => {},
+		},
+	};
+
+	// Auth
+	if (creds.authMethod === 'basic') {
+		options.auth = { username: creds.username as string, password: creds.password as string };
+	} else if (creds.authMethod === 'jwt') {
+		// Server must enable JWT. Create short-lived token (exp ~ 2-5 min).
+		const iss = (creds.jwtIss as string) || (creds.username as string);
+		const exp = Math.floor(Date.now() / 1000) + 120;
+		const payload = { iss, exp };
+		const token = (await import('jsonwebtoken')).sign(payload, creds.jwtSecret as string, { algorithm: 'HS256' });
+		options.headers!['Authorization'] = `Bearer ${token}`;
+	} else if (creds.authMethod === 'oauth2') {
+		options.headers!['Authorization'] = `Bearer ${creds.authToken}`;
+	}
+
+	// Query
+	if (query && Object.keys(query).length) {
+		options.qs = query;
+	}
+
+	// Body
+	if (isMultipart) {
+		options.formData = {};
+		if (binaryPropertyName) {
+			const binary = await this.helpers.getBinaryDataBuffer(itemIndex, binaryPropertyName);
+			const fileInfo = this.getInputData(itemIndex).binary![binaryPropertyName];
+			options.formData['sheet_file'] = {
+				value: binary,
+				options: { filename: fileInfo.fileName || 'upload.bin' },
+			};
+			// dynamic: avatarfile / diploma_file
+			if (path.includes('AvatarSet')) {
+				options.formData = { avatarfile: options.formData['sheet_file'] };
+			}
+			if (path.includes('UploadDiploma')) {
+				options.formData = { diploma_file: options.formData['sheet_file'] };
+			}
+		}
+		// add any scalar fields to formData
+		if (body && typeof body === 'object') {
+			for (const [k, v] of Object.entries(body)) {
+				if (v !== undefined && v !== null) (options.formData as any)[k] = v;
+			}
+		}
+	} else {
+		if (method === 'POST') {
+			options.body = body ?? {};
+			options.json = true;
+			options.headers!['Content-Type'] = 'application/json';
+		}
+	}
+
+	try {
+		const resp = await this.helpers.request!(options);
+		return resp;
+	} catch (error) {
+		throw new NodeApiError(this.getNode(), error);
+	}
+}
+
+// Helpers for identifier strings (user/group)
+export function composeUserIdentifier(data: {
+	external_id?: string;
+	user_id?: string | number;
+	user_name?: string;
+	identity_num?: string;
+}) {
+	if (data.external_id) return { external_id: data.external_id };
+	// Pair form: "user_id=123,user_name=abc,identity_num=123"
+	const pairs: string[] = [];
+	if (data.user_id) pairs.push(`user_id=${data.user_id}`);
+	if (data.user_name) pairs.push(`user_name=${encodeURIComponent(data.user_name)}`);
+	if (data.identity_num) pairs.push(`identity_num=${data.identity_num}`);
+	return pairs.length ? pairs.join(',') : {};
+}
+
+export function composeGroupIdentifier(data: {
+	group_external_id?: string;
+	group_id?: string | number;
+}) {
+	if (data.group_external_id) return { group_external_id: data.group_external_id };
+	if (data.group_id) return { group_id: data.group_id };
+	return {};
+}
+
+export function asGetQueryOrPost(details?: any, preferPost = true) {
+	// API supports GET (querystring) or POST (JSON).
+	// Node will prefer POST unless user chooses GET for debugging.
+	return preferPost ? { method: 'POST', body: details } : { method: 'GET', query: details };
+}
+
+// nodes/BlossomSync.node.ts (קיצור — מבנה עיקרי + כמה פעולות לדוגמה)
+import {
+	IExecuteFunctions,
+	INodeExecutionData,
+	INodeType,
+	INodeTypeDescription,
+} from 'n8n-workflow';
+import { blossomRequest, composeUserIdentifier, composeGroupIdentifier } from '../transport/BlossomClient';
+
+export class BlossomSync implements INodeType {
+	description: INodeTypeDescription = {
+		displayName: 'Blossom Sync',
+		name: 'blossomSync',
+		icon: 'file:blossom.svg',
+		group: ['transform'],
+		version: 1,
+		description: 'Sync users, groups and relations in Blossom Platform',
+		defaults: { name: 'Blossom Sync' },
+		inputs: ['main'],
+		outputs: ['main'],
+		credentials: [{ name: 'blossomSyncApi', required: true }],
+		properties: [
+			{
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				options: [
+					{ name: 'User', value: 'user' },
+					{ name: 'Group', value: 'group' },
+					{ name: 'Membership', value: 'membership' },
+					{ name: 'Manager', value: 'manager' },
+					{ name: 'Supplier', value: 'supplier' },
+					{ name: 'Performance', value: 'performance' },
+					{ name: 'System', value: 'system' },
+				],
+				default: 'user',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				displayOptions: { show: { resource: ['user'] } },
+				options: [
+					{ name: 'Update', value: 'updateUser' },
+					{ name: 'Delete', value: 'deleteUser' },
+					{ name: 'Import CSV', value: 'importUsersCsv' },
+					{ name: 'Delete CSV', value: 'deleteUsersCsv' },
+					{ name: 'Avatar Set', value: 'avatarSet' },
+					{ name: 'Detach From OU', value: 'detachFromOu' },
+					{ name: 'Authorities', value: 'userAuthorities' },
+					{ name: 'Power Manager', value: 'powerManager' },
+					{ name: 'Upload Diploma', value: 'uploadDiploma' },
+				],
+				default: 'updateUser',
+			},
+
+			// Common "domain" field
+			{
+				displayName: 'Domain',
+				name: 'domain',
+				type: 'string',
+				default: '',
+				required: true,
+				description: 'Domain name or ID',
+			},
+
+			// Example: UpdateUser
+			{
+				displayName: 'Details',
+				name: 'details',
+				type: 'json',
+				typeOptions: { alwaysOpenEditWindow: true },
+				displayOptions: { show: { resource: ['user'], operation: ['updateUser'] } },
+				default: '{ "external_id":"u-123", "username":"john.d", "firstname":"John" }',
+				description: 'Keys as per API (supports custom fields by name/id/key)',
+			},
+
+			// Example: DeleteUser — choose identifier style
+			{
+				displayName: 'Identifier Style',
+				name: 'idStyle',
+				type: 'options',
+				displayOptions: { show: { resource: ['user'], operation: ['deleteUser'] } },
+				options: [
+					{ name: 'External ID', value: 'external' },
+					{ name: 'Pair (user_id/user_name/identity_num)', value: 'pair' },
+				],
+				default: 'external',
+			},
+			{
+				displayName: 'External ID',
+				name: 'external_id',
+				type: 'string',
+				displayOptions: { show: { resource: ['user'], operation: ['deleteUser'], idStyle: ['external'] } },
+				default: '',
+			},
+			{
+				displayName: 'User ID',
+				name: 'user_id',
+				type: 'string',
+				displayOptions: { show: { resource: ['user'], operation: ['deleteUser'], idStyle: ['pair'] } },
+				default: '',
+			},
+			{
+				displayName: 'User Name',
+				name: 'user_name',
+				type: 'string',
+				displayOptions: { show: { resource: ['user'], operation: ['deleteUser'], idStyle: ['pair'] } },
+				default: '',
+			},
+			{
+				displayName: 'Identity Number',
+				name: 'identity_num',
+				type: 'string',
+				displayOptions: { show: { resource: ['user'], operation: ['deleteUser'], idStyle: ['pair'] } },
+				default: '',
+			},
+
+			// Example binary upload for CSV
+			{
+				displayName: 'CSV File',
+				name: 'binaryProperty',
+				type: 'string',
+				default: 'sheet_file',
+				placeholder: 'Name of binary property',
+				displayOptions: { show: { resource: ['user'], operation: ['importUsersCsv', 'deleteUsersCsv'] } },
+			},
+		],
+	};
+
+	async execute(this: IExecuteFunctions) {
+		const items = this.getInputData();
+		const returnData: INodeExecutionData[] = [];
+
+		for (let i = 0; i < items.length; i++) {
+			const resource = this.getNodeParameter('resource', i) as string;
+			const operation = this.getNodeParameter('operation', i) as string;
+			const domain = this.getNodeParameter('domain', i) as string;
+
+			let res: any;
+
+			if (resource === 'user' && operation === 'updateUser') {
+				const details = this.getNodeParameter('details', i, {}) as object;
+				res = await blossomRequest.call(this, 'POST', 'UpdateUser', { domain, details });
+			}
+
+			if (resource === 'user' && operation === 'deleteUser') {
+				const idStyle = this.getNodeParameter('idStyle', i) as string;
+				const identifier = (idStyle === 'external')
+					? { external_id: this.getNodeParameter('external_id', i) as string }
+					: composeUserIdentifier({
+						user_id: this.getNodeParameter('user_id', i) as string,
+						user_name: this.getNodeParameter('user_name', i) as string,
+						identity_num: this.getNodeParameter('identity_num', i) as string,
+					});
+				res = await blossomRequest.call(this, 'POST', 'DeleteUser', { domain, user_identifier: identifier });
+			}
+
+			if (resource === 'user' && operation === 'importUsersCsv') {
+				const binaryPropertyName = this.getNodeParameter('binaryProperty', i) as string;
+				// Options example; users can add keep_old_values etc. by JSON param if desired
+				res = await blossomRequest.call(this, 'POST', `ImportUsersCSV/${domain}`, {}, undefined, true, binaryPropertyName, i);
+			}
+
+			if (resource === 'user' && operation === 'deleteUsersCsv') {
+				const binaryPropertyName = this.getNodeParameter('binaryProperty', i) as string;
+				res = await blossomRequest.call(this, 'POST', `DeleteUsersCSV/${domain}`, {}, undefined, true, binaryPropertyName, i);
+			}
+
+			// ... Add the rest: AvatarSet, DetachFromOu, Authorities, PowerManager, UploadDiploma,
+			// Group operations, Membership, Manager, Supplier, Performance, System, etc.
+
+			returnData.push({ json: res });
+		}
+
+		return this.prepareOutputData(returnData);
+	}
+}
+
+
+הערה: יש להשלים את יתר ה־operations באותו דפוס (מיפוי 1:1 לשמות המתודות ולגוף הבקשה/שאלית), כולל Attach/Detach למנהלים/משתמשים/קבוצות, ImportGroupsCSV, ImportGroupsMembersCSV, RunAutoEnrollmentRules, RemoveEmptyOrgUnits, UploadDiploma, AvatarSet, UpdateGroup, DeleteGroup, UpdateSupplier, DeleteSupplier, ImportAssignmentPerformancesCSV, ImportGroupPerformancesCSV, RunScheduledImports, Test — כולם מתועדים לעיל. 
+
+Blossom_Sync_Api_V2 WebService …
+
+n8n Workflow Examples
+A) Full Sync (Nightly / Off-hours)
+
+HTTP Request (or local FS) → Load four CSVs.
+
+Blossom Sync (user.deleteUsersCsv) → domain=1, binary=sheet_file.
+
+Blossom Sync (user.importUsersCsv) → domain=1 (+ password_not_required=1, manager_ou=1, clean_ou=1 אם נדרש). 
+
+Blossom_Sync_Api_V2 WebService …
+
+Blossom Sync (group.importCsv) → domain=1 (+ manager_type=all, override_existing_permissions=0 …). 
+
+Blossom_Sync_Api_V2 WebService …
+
+Blossom Sync (membership.importGroupsMembersCsv) → domain=1 (clean_ou=1). 
+
+Blossom_Sync_Api_V2 WebService …
+
+Blossom Sync (system.runAutoEnrollmentRules) — להריץ מחוץ לשעות עבודה. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Blossom Sync (system.removeEmptyOrgUnits) — ניקוי. 
+
+Blossom_Sync_Api_V2 WebService …
+
+IF על results[].issues → Write Binary File / Slack — דוח חריגות.
+
+B) Create Course + Enroll Users
+
+Blossom Sync (group.update) עם details: { external_id:"c-100", name:"Cyber 101", type:"course", open_date:"2025-01-01" }. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Blossom Sync (membership.attachUserToGroup) × N משתמשים. 
+
+Blossom_Sync_Api_V2 WebService …
+
+C) User Assets
+
+Blossom Sync (user.avatarSet) עם binary avatarfile (jpg/png).
+
+Blossom Sync (user.uploadDiploma) עם group_identifier + diploma_file. 
+
+Blossom_Sync_Api_V2 WebService …
+
+Troubleshooting Guide (מפורט)
+Symptom	Likely Cause	What to Check / Fix
+{"res":"error","error_msg":"Cannot continue, ... fields are missing"}	חסרים עמודות/שדות חובה ב־CSV/JSON	בדקו תבנית ה־CSV הרשמית (Download template) ושמות עמודות תואמים, קידוד UTF-8, אין כותרות שגויות. 
+
+Blossom_Sync_Api_V2 WebService …
+
+
+results[].issues[].message: "No relevant match found"	מזהה משתמש/קבוצה לא קיים	ודאו external_id/group_external_id/user_name תקינים. 
+
+Blossom_Sync_Api_V2 WebService …
+
+
+"Name already exists" ב־ImportGroupsCSV	שם קבוצה כפול	השתמשו ב־external_id ייחודי ועדכנו במקום ליצור חדש. 
+
+Blossom_Sync_Api_V2 WebService …
+
+
+Invalid value על user_timezone (דוגמה)	ערך לא נתמך	ואלידציה מוקדמת לפני יבוא; המירו לערכים נתמכים. 
+
+Blossom_Sync_Api_V2 WebService …
+
+
+לא נוצרו/נוקו OU כצפוי	חסר manager_ou/ou_name או clean_ou=0	הוסיפו עמודות ו/או הפעילו clean_ou. 
+
+Blossom_Sync_Api_V2 WebService …
+
+
+4xx/5xx עם res:error	תקלת פורמט/הרשאות/RateLimit	שמרו ≤ 30 rps; בצעו Retry+Backoff; ודאו Basic/JWT/OAuth2 נכון. 
+
+Blossom_Sync_Api_V2 WebService …
+
+
+שגיאת נתיב עם platform/	בעיית מסלול URL ידועה	הסירו platform/ מה־path (הלקוח בקוד למעלה עושה זאת אוטומטית). 
+
+Blossom_Sync_Api_V2 WebService …
+
+
+יבוא performances נכשל על כפילות תאריכים	רישום קיים באותו יום	טפלו בכפילויות מראש או הגדירו לוגיקת upsert (מחיקה/עדכון לפני יבוא). 
+
+Blossom_Sync_Api_V2 WebService …
+
+Checklists ל־QA לפני Go-Live
+
+ בדיקת Basic Auth מול Test endpoint. 
+
+Blossom_Sync_Api_V2 WebService …
+
+ בדיקת Rate Limit עם Throttle=25 rps.
+
+ CSV samples לפי ה־templates; בדיקת results[].issues. 
+
+Blossom_Sync_Api_V2 WebService …
+
+ Mass sync ל־sandbox domain → RunAutoEnrollmentRules → Validate memberships. 
+
+Blossom_Sync_Api_V2 WebService …
+
+ העלאת avatarfile/diploma_file. 
+
+Blossom_Sync_Api_V2 WebService …
+
+ תרחישי שחזור soft-deleted users באמצעות Update/Import. 
+
+Blossom_Sync_Api_V2 WebService …
