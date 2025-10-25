@@ -17,13 +17,13 @@ export async function blossomApiRequest(
 ): Promise<unknown> {
 	const credentials = await this.getCredentials('blossomSyncApi');
 	const baseUrl = credentials?.baseUrl as string;
-	const authType = credentials?.authType as string;
+	const authMethod = credentials?.authMethod as string;
 	
 	if (!baseUrl) {
 		throw new Error('Base URL is required');
 	}
 
-	if (!authType) {
+	if (!authMethod) {
 		throw new Error('Authentication type is required');
 	}
 
@@ -48,12 +48,12 @@ export async function blossomApiRequest(
 		method,
 		url: `${cleanBaseUrl}/${cleanEndpoint}`,
 		body: body ? JSON.stringify(body, null, 2) : 'No body',
-		authType,
+		authMethod,
 		json: options.json
 	});
 
 	// Add authentication based on type
-	if (authType === 'basic') {
+	if (authMethod === 'basic') {
 		const username = credentials?.username as string;
 		const password = credentials?.password as string;
 		if (username && password) {
@@ -64,7 +64,7 @@ export async function blossomApiRequest(
 		} else {
 			throw new Error('Username and password are required for Basic Authentication');
 		}
-	} else if (authType === 'apiKey') {
+	} else if (authMethod === 'apiKey') {
 		const apiKey = credentials?.apiKey as string;
 		if (apiKey) {
 			options.headers = {
@@ -74,7 +74,7 @@ export async function blossomApiRequest(
 		} else {
 			throw new Error('API Key is required for API Key Authentication');
 		}
-	} else if (authType === 'jwt') {
+	} else if (authMethod === 'jwt') {
 		const jwtToken = credentials?.jwtToken as string;
 		if (jwtToken) {
 			options.headers = {
@@ -84,7 +84,7 @@ export async function blossomApiRequest(
 		} else {
 			throw new Error('JWT Token is required for JWT Authentication');
 		}
-	} else if (authType === 'oauth2') {
+	} else if (authMethod === 'oauth2') {
 		const oauth2Token = credentials?.oauth2Token as string;
 		if (oauth2Token) {
 			options.headers = {
@@ -103,13 +103,13 @@ export async function blossomApiRequest(
 		if (error.response?.status === 401) {
 			throw new Error(`Authentication failed (401). Please check your credentials:
 - Base URL: ${cleanBaseUrl}
-- Auth Type: ${authType}
+- Auth Type: ${authMethod}
 - Domain: ${credentials?.domain || 'Not set'}
-- Username: ${authType === 'basic' ? (credentials?.username ? 'Set' : 'Missing') : 'N/A'}
-- Password: ${authType === 'basic' ? (credentials?.password ? 'Set' : 'Missing') : 'N/A'}
-- API Key: ${authType === 'apiKey' ? (credentials?.apiKey ? 'Set' : 'Missing') : 'N/A'}
-- JWT Token: ${authType === 'jwt' ? (credentials?.jwtToken ? 'Set' : 'Missing') : 'N/A'}
-- OAuth2 Token: ${authType === 'oauth2' ? (credentials?.oauth2Token ? 'Set' : 'Missing') : 'N/A'}
+- Username: ${authMethod === 'basic' ? (credentials?.username ? 'Set' : 'Missing') : 'N/A'}
+- Password: ${authMethod === 'basic' ? (credentials?.password ? 'Set' : 'Missing') : 'N/A'}
+- API Key: ${authMethod === 'apiKey' ? (credentials?.apiKey ? 'Set' : 'Missing') : 'N/A'}
+- JWT Token: ${authMethod === 'jwt' ? (credentials?.jwtToken ? 'Set' : 'Missing') : 'N/A'}
+- OAuth2 Token: ${authMethod === 'oauth2' ? (credentials?.oauth2Token ? 'Set' : 'Missing') : 'N/A'}
 
 Common issues:
 1. Wrong username/password (use API credentials, not login credentials)
@@ -153,7 +153,7 @@ Common issues:
 			throw new Error(`Request failed: ${error.message}
 - Base URL: ${cleanBaseUrl}
 - Endpoint: ${cleanEndpoint}
-- Auth Type: ${authType}`);
+- Auth Type: ${authMethod}`);
 		}
 	});
 }
