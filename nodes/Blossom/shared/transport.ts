@@ -15,7 +15,7 @@ export async function blossomApiRequest(
 	qs: IDataObject = {},
 	body: IDataObject | undefined = undefined,
 ): Promise<unknown> {
-	const credentials = await this.getCredentials('blossomApi');
+	const credentials = await this.getCredentials('blossomSyncApi');
 	const baseUrl = credentials?.baseUrl as string;
 	const authType = credentials?.authType as string;
 	
