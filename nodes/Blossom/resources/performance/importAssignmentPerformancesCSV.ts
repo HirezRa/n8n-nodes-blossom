@@ -1,0 +1,31 @@
+import type { INodeProperties } from 'n8n-workflow';
+
+const showOnlyForPerformanceImportAssignment = {
+	operation: ['importAssignmentPerformancesCSV'],
+	resource: ['performance'],
+};
+
+export const performanceImportAssignmentPerformancesCSVDescription: INodeProperties[] = [
+	{
+		displayName: 'Domain',
+		name: 'domain',
+		type: 'number',
+		default: 1,
+		required: true,
+		displayOptions: {
+			show: showOnlyForPerformanceImportAssignment,
+		},
+		description: 'Domain ID',
+	},
+	{
+		displayName: 'CSV File',
+		name: 'csvFile',
+		type: 'string',
+		default: 'data',
+		required: true,
+		displayOptions: {
+			show: showOnlyForPerformanceImportAssignment,
+		},
+		description: 'Name of the binary property containing the CSV file. Required column: user_name or user_external_id.',
+	},
+];

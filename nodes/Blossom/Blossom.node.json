@@ -1,0 +1,22 @@
+{
+	"node": "n8n-nodes-blossom",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Education", "Productivity"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.blossom-kc.com/api"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/YOUR-COMPANY/n8n-nodes-blossom"
+			}
+		]
+	},
+	"alias": ["LMS", "LXP", "Learning", "Blossom", "MER"],
+	"subcategories": {
+		"Education": ["Learning Management"]
+	}
+}

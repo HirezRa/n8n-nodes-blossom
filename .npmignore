@@ -1,0 +1,68 @@
+# Source files (only dist should be published)
+src/
+*.ts
+!*.d.ts
+tsconfig.json
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test files
+__tests__/
+tests/
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+coverage/
+.nyc_output/
+
+# Documentation (keep README.md)
+docs/
+*.md
+!README.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Example nodes (not needed in published package)
+nodes/Example/
+nodes/GithubIssues/
+credentials/GithubIssuesApi.credentials.ts
+credentials/GithubIssuesOAuth2Api.credentials.ts
+icons/github.*
+
+# Templates
+README_TEMPLATE.md
+CODE_OF_CONDUCT.md
+
+# Security scan reports
+SECURITY_SCAN_REPORT.md
