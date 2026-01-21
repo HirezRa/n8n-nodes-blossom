@@ -57,7 +57,7 @@ export class BlossomApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: '={{$credentials.baseUrl.endsWith("/WebServices/sync_2") ? $credentials.baseUrl.slice(0, -20) : $credentials.baseUrl.endsWith("/WebServices/sync_2/") ? $credentials.baseUrl.slice(0, -21) : $credentials.baseUrl}}',
+			baseURL: '={{$credentials.baseUrl.replace(/\\/WebServices\\/sync_2\\/?$/, "").replace(/\\/$/, "")}}',
 			url: '/WebServices/sync_2/Test',
 			method: 'GET',
 		},
