@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-blossom",
-	"version": "3.0.2",
+	"version": "3.0.3",
 	"description": "n8n node for Blossom LMS/LXP integration - manage users, groups, memberships, and learning data",
 	"license": "MIT",
 	"homepage": "https://github.com/your-org/n8n-nodes-blossom",
