@@ -16,13 +16,31 @@ type BlossomFunctions =
 	| IHookFunctions;
 
 /**
+ * Validate base URL format
+ */
+function validateBaseUrl(baseUrl: string): void {
+	if (!baseUrl || typeof baseUrl !== 'string') {
+		throw new Error('Base URL is required and must be a string');
+	}
+	
+	// Check if it's a valid URL format
+	if (!baseUrl.match(/^https?:\/\/.+/)) {
+		throw new Error(
+			`Invalid Base URL format: "${baseUrl}". ` +
+			'Base URL must start with http:// or https:// (e.g., https://your-instance.blossom-kc.com)'
+		);
+	}
+}
+
+/**
  * Normalize base URL by removing /WebServices/sync_2 if present
  * This allows users to enter either:
  * - https://your-instance.blossom-kc.com (preferred)
  * - https://your-instance.blossom-kc.com/WebServices/sync_2 (also works)
  */
 export function normalizeBaseUrl(baseUrl: string): string {
-	return baseUrl.replace(/\/WebServices\/sync_2\/?$/, '');
+	validateBaseUrl(baseUrl);
+	return baseUrl.replace(/\/WebServices\/sync_2\/?$/, '').replace(/\/$/, '');
 }
 
 export async function blossomApiRequest(
@@ -36,7 +54,28 @@ export async function blossomApiRequest(
 ): Promise<IDataObject> {
 	const credentials = await this.getCredentials('blossomApi');
 	const rawBaseUrl = (credentials.baseUrl as string) || 'https://your-instance.blossom-kc.com';
-	const baseUrl = normalizeBaseUrl(rawBaseUrl);
+	
+	let baseUrl: string;
+	try {
+		baseUrl = normalizeBaseUrl(rawBaseUrl);
+	} catch (error) {
+		// Provide better error message for Base URL validation
+		const requestDetails: RequestDetails = {
+			endpoint: `${rawBaseUrl}${endpoint}`,
+			method,
+			body: body as Record<string, unknown>,
+			queryString: qs as Record<string, unknown>,
+		};
+		throw createBlossomApiError(
+			operationName,
+			{
+				message: error instanceof Error ? error.message : 'Invalid Base URL',
+				name: 'ValidationError',
+			},
+			requestDetails,
+			this.getNode(),
+		);
+	}
 
 	const fullUrl = `${baseUrl}${endpoint}`;
 

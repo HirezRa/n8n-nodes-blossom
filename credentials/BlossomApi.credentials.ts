@@ -58,8 +58,8 @@ export class BlossomApi implements ICredentialType {
 	test: ICredentialTestRequest = {
 		request: {
 			baseURL: '={{$credentials.baseUrl.replace(/\\/WebServices\\/sync_2\\/?$/, "").replace(/\\/$/, "")}}',
-			url: '/WebServices/sync_2/Test',
-			method: 'GET',
+			url: '/WebServices/sync_2/Test/1',
+			method: 'POST',
 		},
 	};
 }

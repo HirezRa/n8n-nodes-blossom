@@ -39,7 +39,7 @@ export class Blossom implements INodeType {
 			},
 		],
 		requestDefaults: {
-			baseURL: '={{$credentials.baseUrl}}',
+			baseURL: '={{$credentials.baseUrl.replace(/\\/WebServices\\/sync_2\\/?$/, "").replace(/\\/$/, "")}}',
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
@@ -345,12 +345,64 @@ export class Blossom implements INodeType {
 						const endpoint = `/WebServices/sync_2/UploadDiploma/${domain}/${userIdentifierType}=${userIdentifierValue}/${groupIdentifierType}=${groupIdentifierValue}/1`;
 						responseData = await blossomApiRequest.call(this, 'POST', endpoint, undefined, {}, {}, operationName);
 					}
+			} else if (resource === 'utility') {
+				// Utility operations - explicit API calls like old version 2.5.13
+				if (operation === 'test') {
+					const operationName = 'Test Connection';
+					const domain = this.getNodeParameter('domain', i) as number;
+					responseData = await blossomApiRequest.call(
+						this,
+						'POST',
+						`/WebServices/sync_2/Test/${domain}`,
+						undefined,
+						{},
+						{},
+						operationName,
+					);
+				} else if (operation === 'runAutoEnrollmentRules') {
+					const operationName = 'Run Auto Enrollment Rules';
+					responseData = await blossomApiRequest.call(
+						this,
+						'POST',
+						'/WebServices/sync_2/RunAutoEnrollmentRules',
+						undefined,
+						{},
+						{},
+						operationName,
+					);
+				} else if (operation === 'runScheduledImports') {
+					const operationName = 'Run Scheduled Imports';
+					responseData = await blossomApiRequest.call(
+						this,
+						'POST',
+						'/WebServices/sync_2/RunScheduledImports',
+						undefined,
+						{},
+						{},
+						operationName,
+					);
+				} else if (operation === 'removeEmptyOrgUnits') {
+					const operationName = 'Remove Empty Org Units';
+					const domain = this.getNodeParameter('domain', i) as number;
+					responseData = await blossomApiRequest.call(
+						this,
+						'POST',
+						`/WebServices/sync_2/RemoveEmptyOrgUnits/${domain}`,
+						undefined,
+						{},
+						{},
+						operationName,
+					);
 				} else {
-					// All other operations use declarative routing - no custom execute needed
-					// This will be handled by n8n's declarative routing system
-					// Return empty result - declarative routing will handle it
+					// Unknown utility operation
 					responseData = {};
 				}
+			} else {
+				// All other operations use declarative routing - no custom execute needed
+				// This will be handled by n8n's declarative routing system
+				// Return empty result - declarative routing will handle it
+				responseData = {};
+			}
 
 				returnData.push({
 					json: responseData as IDataObject,

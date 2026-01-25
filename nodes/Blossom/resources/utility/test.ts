@@ -16,4 +16,15 @@ export const utilityTestDescription: INodeProperties[] = [
 		default: '',
 		description: 'Tests the connection to Blossom API and returns protocol and random number',
 	},
+	{
+		displayName: 'Domain',
+		name: 'domain',
+		type: 'number',
+		default: 1,
+		required: true,
+		displayOptions: {
+			show: showOnlyForUtilityTest,
+		},
+		description: 'Domain ID to test the connection against',
+	},
 ];
