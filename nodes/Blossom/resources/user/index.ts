@@ -1,6 +1,7 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { userUpdateDescription } from './update';
 import { userDeleteDescription } from './delete';
+import { userGetDescription } from './get';
 import { userAvatarSetDescription } from './avatarSet';
 import { userAuthoritiesDescription } from './userAuthorities';
 import { userPowerManagerDescription } from './powerManager';
@@ -21,6 +22,18 @@ export const userDescription: INodeProperties[] = [
 			show: showOnlyForUsers,
 		},
 		options: [
+			{
+				name: 'Get',
+				value: 'get',
+				action: 'Get a user',
+				description: 'Get user details by identifier (External ID, User ID, User Name, or Identity Number)',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '=/WebServices/sync_2/GetUser/{{$parameter.domain}}/{{$parameter.userIdentifierType}}={{$parameter.userIdentifierValue}}',
+					},
+				},
+			},
 			{
 				name: 'Delete',
 				value: 'delete',
@@ -92,6 +105,7 @@ export const userDescription: INodeProperties[] = [
 	},
 	...userUpdateDescription,
 	...userDeleteDescription,
+	...userGetDescription,
 	...userAvatarSetDescription,
 	...userAuthoritiesDescription,
 	...userPowerManagerDescription,

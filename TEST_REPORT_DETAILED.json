@@ -15,7 +15,7 @@
       "response": {
         "res": "success",
         "protocol": "rest",
-        "random_number": 742225
+        "random_number": 123456
       }
     },
     {
@@ -24,7 +24,7 @@
       "method": "POST",
       "status": "PASS",
       "statusCode": 200,
-      "response": "11 groups"
+      "response": "N groups"
     },
     {
       "name": "Get User Completion",
@@ -32,7 +32,7 @@
       "method": "POST",
       "status": "PASS",
       "statusCode": 200,
-      "response": "382 users"
+      "response": "N users"
     },
     {
       "name": "Get Members Status",

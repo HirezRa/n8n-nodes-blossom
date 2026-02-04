@@ -278,7 +278,7 @@ export function buildDetailedErrorDescription(
 			details.push(`   - Base URL must start with http:// or https://`);
 			details.push(`   - Correct format: https://your-instance.blossom-kc.com`);
 			details.push(`   - Do NOT include /WebServices/sync_2 in the Base URL field`);
-			details.push(`   - Example: https://YOUR-COMPANY.blossom-kc.com`);
+			details.push(`   - Example: https://your-instance.blossom-kc.com`);
 		}
 	}
 

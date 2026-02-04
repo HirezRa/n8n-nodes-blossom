@@ -29,12 +29,12 @@
 
 **Changes Made:**
 ```javascript
-// Before:
-const BASE_URL = 'YOUR-COMPANY.blossom-kc.com';
-const USERNAME = 'REDACTED_USERNAME';
-const PASSWORD = 'REDACTED_API_KEY';
+// Before (example - never use real credentials in code):
+// const BASE_URL = 'internal-instance.example.com';
+// const USERNAME = 'someUser';
+// const PASSWORD = 'plaintextPassword';
 
-// After:
+// After (safe):
 const BASE_URL = process.env.BLOSSOM_BASE_URL || 'your-instance.blossom-kc.com';
 const USERNAME = process.env.BLOSSOM_USERNAME || 'YOUR_USERNAME';
 const PASSWORD = process.env.BLOSSOM_PASSWORD || 'YOUR_PASSWORD';
@@ -43,7 +43,7 @@ const PASSWORD = process.env.BLOSSOM_PASSWORD || 'YOUR_PASSWORD';
 ### 2. Documentation Files with Internal URLs
 
 **Files Fixed:**
-- ✅ `OPERATIONS_STATUS_REPORT.md` - Replaced `YOUR-COMPANY.blossom-kc.com` with `your-instance.blossom-kc.com`
+- ✅ `OPERATIONS_STATUS_REPORT.md` - Replaced internal URL with `your-instance.blossom-kc.com`
 - ✅ `COMPREHENSIVE_TEST_REPORT.md` - Replaced internal URL with placeholder
 - ✅ `TEST_REPORT.md` - Replaced credentials and URL with placeholders
 - ✅ `COMPLETE_FEATURES_LIST.md` - Replaced internal URL with placeholder
@@ -86,8 +86,8 @@ const PASSWORD = process.env.BLOSSOM_PASSWORD || 'YOUR_PASSWORD';
 
 1. **Check git history for secrets:**
    ```bash
-   git log --all --full-history --source -S "REDACTED_API_KEY" -- "*.js" "*.ts" "*.md"
-   git log --all --full-history --source -S "REDACTED_USERNAME" -- "*.js" "*.ts" "*.md"
+   git log -p | grep -E "(password|secret|api[_-]?key|token)"  # review matches
+   # Or use: git log --all -S "YOUR_ACTUAL_SECRET" -- "*.js" "*.ts" "*.md"
    ```
 
 2. **If secrets found in history, clean them:**

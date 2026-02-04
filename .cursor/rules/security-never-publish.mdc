@@ -1,0 +1,34 @@
+---
+description: אבטחה – מה אסור לפרסם ב-GitHub וב-NPM (Blossom)
+globs: "**/*"
+alwaysApply: true
+---
+
+# אבטחה – מה אסור לפרסם (GitHub / NPM)
+
+## אסור בהחלט – לא ב-Git, לא ב-NPM
+
+- **סיסמאות (passwords)** – גם לא בדוגמאות "Before/After", גם לא בהערות, גם לא ב־SECURITY_SCAN_REPORT או דוחות.
+- **שמות משתמש אמיתיים** – רק placeholders: `YOUR_USERNAME`, `your-instance`.
+- **כתובות פנימיות** – לא הוסטים/דומיינים של החברה (דומיין פנימי). רק: `your-instance.blossom-kc.com`.
+- **API keys, tokens, secrets** – רק משתני סביבה או placeholders.
+- **קבצי .env** או קבצים עם credentials – חייבים ב-.gitignore; לא לכלול ב-package.
+- **נתוני בדיקות אמיתיים** – מספר משתמשים/קבוצות production (למשל "382 users") – להשתמש ב־"N" או בערך דמה בדוחות.
+
+## מומלץ – לא לפרסם ל-NPM
+
+- דוחות בדיקות מפורטים: `TEST_REPORT_DETAILED.json`, `COMPREHENSIVE_TEST_REPORT.md`, `OPERATIONS_STATUS_REPORT.md`, `SECURITY_SCAN_REPORT.md`.
+- סיכומי פרסום פנימיים: `PUBLISH_SUMMARY.md`, `PUBLISH_CHECKLIST.md`.
+- כל קובץ שמזכיר ארגון/פרויקט פנימי – להחליף ב־`your-org` או placeholder.
+
+## לפני כל commit ו-publish
+
+1. חיפוש: `password|secret|api[_-]?key|token|\.blossom-kc\.com` (מלבד `your-instance.blossom-kc.com`).
+2. וידוא ש־.gitignore כולל: `test-connection.js`, `test-api.js`, `API/`, `.env*`, `*.secret`.
+3. וידוא ש־.npmignore מונע פרסום דוחות וקבצי בדיקות עם נתונים פנימיים.
+
+## אם פורסם מידע רגיש
+
+1. להחליף/לסובב (rotate) את כל ה-credentials שנחשפו.
+2. להסיר מהקוד והדוחות כל ערך אמיתי ולהותיר רק placeholders.
+3. אם הריפו ב-GitHub – לשקול ניקוי היסטוריה (BFG/git filter-repo) או מחיקת הריפו ויצירה מחדש.

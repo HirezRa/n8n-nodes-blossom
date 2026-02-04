@@ -25,7 +25,7 @@
 - **Endpoint:** `/WebServices/sync_2/Test`
 - **Method:** GET
 - **Status:** ✅ PASS (200 OK)
-- **Response:** `{"res":"success","protocol":"rest","random_number":734228}`
+- **Response:** `{"res":"success","protocol":"rest","random_number":123456}`
 - **הערות:** עובד מצוין, מחזיר protocol ו-random number
 
 ---
@@ -36,7 +36,7 @@
 - **Endpoint:** `/WebServices/api_remote/groups`
 - **Method:** POST
 - **Status:** ✅ PASS (200 OK)
-- **Response:** 11 groups returned
+- **Response:** N groups returned
 - **Filters:** type = 'qualification'
 - **הערות:** מחזיר רשימת groups בהצלחה
 
@@ -48,7 +48,7 @@
 - **Endpoint:** `/WebServices/api_remote/user_completion`
 - **Method:** POST
 - **Status:** ✅ PASS (200 OK)
-- **Response:** 382 users returned
+- **Response:** N users returned
 - **Filters:** 
   - start_date: 2020-01-01
   - end_date: 2030-01-01

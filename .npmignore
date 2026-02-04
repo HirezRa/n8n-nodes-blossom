@@ -64,5 +64,19 @@ icons/github.*
 README_TEMPLATE.md
 CODE_OF_CONDUCT.md
 
-# Security scan reports
+# Security and internal reports (never publish)
 SECURITY_SCAN_REPORT.md
+TEST_REPORT_DETAILED.json
+TEST_REPORT.md
+COMPREHENSIVE_TEST_REPORT.md
+OPERATIONS_STATUS_REPORT.md
+PUBLISH_CHECKLIST.md
+PUBLISH_SUMMARY.md
+COMPLETE_FEATURES_LIST.md
+
+# Scripts that may use env credentials (never publish)
+scripts/
+test-connection.js
+test-api.js
+test-all-operations.js
+test_update_user.js

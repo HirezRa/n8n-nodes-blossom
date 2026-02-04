@@ -11,7 +11,8 @@
 		],
 		"primaryDocumentation": [
 			{
-				"url": "https://github.com/YOUR-COMPANY/n8n-nodes-blossom"
+				"url": "https://github.com/your-org/n8n-nodes-blossom",
+				"description": "Blossom n8n node: users, groups, memberships, managers, suppliers, performance, data, utility."
 			}
 		]
 	},

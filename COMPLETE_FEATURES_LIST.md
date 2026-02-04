@@ -1,7 +1,7 @@
 # Blossom n8n Node - Complete Features List
 
-**Version:** 3.0.1  
-**Last Updated:** 2025-01-21
+**Version:** 3.0.6  
+**Last Updated:** 2025-02-04
 
 ---
 
@@ -15,36 +15,40 @@ This document lists all available operations in the Blossom n8n community node, 
 
 ### Operations
 
-1. **Update** ✅
+1. **Get** ✅
+   - Get user details by identifier (External ID, User ID, User Name, or Identity Number)
+   - Declarative routing (GET)
+
+2. **Update** ✅
    - Create or update a user
    - Supports all user fields including custom fields
    - Declarative routing
 
-2. **Delete** ✅
+3. **Delete** ✅
    - Delete a user by identifier (External ID, User ID, User Name, Identity Number)
    - Declarative routing
 
-3. **Set Avatar** ✅
+4. **Set Avatar** ✅
    - Upload or remove user avatar
    - Requires programmatic execution (file upload)
    - Supports image files
 
-4. **Set User Authorities** ✅
+5. **Set User Authorities** ✅
    - Set HR manager, professional manager, coach, or authorization supervisor
    - Clear authorities by setting empty values
    - Declarative routing
 
-5. **Power Manager** ✅
+6. **Power Manager** ✅
    - Grant or revoke Power Manager privileges
    - Declarative routing
 
-6. **Import Users CSV** ✅
+7. **Import Users CSV** ✅
    - Bulk import users from CSV file
    - Requires programmatic execution (file upload)
    - Options: keep_old_values, temp_password, new_user_notification, password_not_required, update_password, manager_ou, clean_ou
    - Limit: 4 calls per 24 hours
 
-7. **Delete Users CSV** ✅
+8. **Delete Users CSV** ✅
    - Bulk delete users from CSV file
    - Requires programmatic execution (file upload)
    - Soft delete (can be restored)

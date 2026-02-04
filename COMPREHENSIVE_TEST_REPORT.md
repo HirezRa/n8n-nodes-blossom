@@ -33,7 +33,7 @@
 {
   "res": "success",
   "protocol": "rest",
-  "random_number": 734228
+  "random_number": 123456
 }
 ```
 
@@ -53,7 +53,7 @@
 **תוצאה:** ✅ הצלחה
 
 **פרטי התגובה:**
-- **מספר Groups:** 11
+- **מספר Groups:** N
 - **פילטר:** type = 'qualification'
 - **פורמט:** Array of group objects
 
@@ -73,7 +73,7 @@
 **תוצאה:** ✅ הצלחה
 
 **פרטי התגובה:**
-- **מספר משתמשים:** 382
+- **מספר משתמשים:** N
 - **טווח תאריכים:** 2020-01-01 עד 2030-01-01
 - **סוג:** Courses
 - **פורמט:** Array of user completion objects

@@ -6,12 +6,15 @@ n8n community node for integrating with **Blossom LMS/LXP** (Learning Management
 
 ## Features
 
-This node provides comprehensive integration with Blossom API, allowing you to:
+This node provides comprehensive integration with the **Blossom Sync API V2**, allowing you to:
 
-- **User Management**: Create, update, and delete users
-- **Group/Workspace Management**: Manage groups, courses, qualifications, and organizational units
-- **Membership Management**: Attach and detach users from groups
-- **Data Queries**: Retrieve completion status, member status, groups, and meetings
+- **User Management**: Get, create, update, and delete users; bulk import/delete via CSV; set avatar and authorities; Power Manager
+- **Group/Workspace Management**: Create, update, delete groups; attach/detach sub-groups and instances; bulk import via CSV
+- **Membership Management**: Attach and detach users from groups; bulk import members via CSV
+- **Manager & Supplier**: Attach/detach managers; update/delete suppliers (e.g. RegExt)
+- **Performance**: Import assignment/group performances via CSV; upload/remove diplomas
+- **Data Queries**: User completion, members status, groups, meetings, set due date
+- **Utility**: Test connection, run auto-enrollment rules, scheduled imports, remove empty org units
 
 ## Installation
 
@@ -33,7 +36,28 @@ Contact your Blossom administrator to obtain API credentials with appropriate pe
 
 ## Resources and Operations
 
+| Resource    | Operations |
+|------------|------------|
+| **User**   | Get, Update, Delete, Set Avatar, Set User Authorities, Power Manager, Import Users CSV, Delete Users CSV |
+| **Group**  | Update, Delete, Attach/Detach Sub Group, Attach/Detach Instance, Import Groups CSV |
+| **Membership** | Attach User to Group, Detach User From Group, Import Groups Members CSV |
+| **Manager** | Attach Manager, Detach Manager |
+| **Supplier** | Update Supplier, Delete Supplier |
+| **Performance** | Import Assignment/Group Performances CSV, Upload Diploma |
+| **Data**   | Get User Completion, Get Members Status, Get Groups, Get Meetings, Set Due Date |
+| **Utility** | Test, Run Auto Enrollment Rules, Run Scheduled Imports, Remove Empty Org Units |
+
+For a full list with implementation notes, see [COMPLETE_FEATURES_LIST.md](COMPLETE_FEATURES_LIST.md). For a quick API-style reference, see [docs/OPERATIONS.md](docs/OPERATIONS.md).
+
 ### User Resource
+
+#### Get User
+Retrieve a single user's details by identifier (External ID, User ID, User Name, or Identity Number).
+
+**Required Fields:**
+- Domain
+- User Identifier Type (External ID, User ID, User Name, Identity Number)
+- User Identifier Value
 
 #### Update User
 Create or update a user in Blossom.
@@ -203,7 +227,17 @@ Get list of groups/workspaces.
 
 ## Usage Examples
 
-### Example 1: Create a User
+### Example 1: Get a User
+
+1. Add the Blossom node to your workflow
+2. Select **Resource**: User
+3. Select **Operation**: Get
+4. Fill in:
+   - Domain: `1`
+   - User Identifier Type: `External ID`
+   - User Identifier Value: `u123`
+
+### Example 2: Create a User
 
 1. Add the Blossom node to your workflow
 2. Select **Resource**: User
@@ -216,7 +250,7 @@ Get list of groups/workspaces.
    - Last Name: `Doe`
    - Email: `john.doe@example.com`
 
-### Example 2: Attach User to Course
+### Example 3: Attach User to Course
 
 1. Add the Blossom node
 2. Select **Resource**: Membership
@@ -226,7 +260,7 @@ Get list of groups/workspaces.
    - User External ID: `u123`
    - Group External ID: `course_456`
 
-### Example 3: Get User Completions
+### Example 4: Get User Completions
 
 1. Add the Blossom node
 2. Select **Resource**: Data
@@ -254,13 +288,13 @@ For complete API documentation, refer to:
 
 When performing a complete sync, follow this order:
 
-1. Delete Users CSV
-2. Import Users CSV
-3. Import Groups CSV
-4. Import Groups Members CSV
-5. Run Auto Enrollment Rules (once at the end)
+1. **Delete Users CSV** (if cleaning existing users)
+2. **Import Users CSV** – bulk import users from CSV
+3. **Import Groups CSV** – bulk import groups/workspaces from CSV
+4. **Import Groups Members CSV** – bulk import group members from CSV
+5. **Run Auto Enrollment Rules** (once at the end, limit: 4 calls per 24 hours)
 
-> **Note**: CSV import methods are not yet implemented in this node. Use the Update operations for individual records or contact the maintainers for CSV support.
+CSV import operations require a binary file input (your CSV). Attach the file in the node or provide it from a previous node. Rate limit: 4 calls per 24 hours per CSV operation.
 
 ## External IDs
 

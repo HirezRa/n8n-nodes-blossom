@@ -45,3 +45,9 @@ test-connection.js
 test-api.js
 test-all-operations.js
 API/Mer_Blossom-Site-Credentials.md
+API/
+*.credentials.local.*
+# Optional: keep test reports out of repo if they ever contained real data
+# TEST_REPORT_DETAILED.json
+# COMPREHENSIVE_TEST_REPORT.md
+# OPERATIONS_STATUS_REPORT.md

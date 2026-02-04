@@ -36,7 +36,7 @@ git status
 git status --ignored
 
 # Check git history for previously committed secrets
-git log --all --full-history --source -S "REDACTED_USERNAME" -- "*.ts" "*.js" "*.json"
+git log -p | grep -E "(password|secret|apiKey|token)"  # review for secrets
 ```
 
 ### 3. Final Build & Test
