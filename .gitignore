@@ -47,10 +47,32 @@ coverage/
 test-connection.js
 test-api.js
 test-all-operations.js
-API/Mer_Blossom-Site-Credentials.md
 API/
 *.credentials.local.*
-# Optional: keep test reports out of repo if they ever contained real data
-# TEST_REPORT_DETAILED.json
-# COMPREHENSIVE_TEST_REPORT.md
-# OPERATIONS_STATUS_REPORT.md
+
+# Internal docs and test reports (do not publish to GitHub or NPM - per security RULE)
+INVESTIGATION_*.md
+*_REPORT.md
+*_FINDINGS.md
+*VERIFICATION*.md
+*RECOMMENDATIONS*.md
+*CHECKLIST*.md
+*_RESULTS.md
+*STATUS*.md
+*OPERATIONS*.md
+*_INSTRUCTIONS*.md
+docs/changes/
+**/test/*REPORT*.md
+**/test/*SPEC.md
+**/test/*GUIDE.md
+release_notes_*.md
+investigation-reports/
+TEST_REPORT_DETAILED.json
+COMPREHENSIVE_TEST_REPORT.md
+OPERATIONS_STATUS_REPORT.md
+SECURITY_SCAN_REPORT.md
+TEST_REPORT.md
+PUBLISH_CHECKLIST.md
+PUBLISH_SUMMARY.md
+COMPLETE_FEATURES_LIST.md
+docs/OPERATIONS.md

@@ -1,0 +1,19 @@
+---
+description: הפניה לכלל האבטחה הראשי – פתח את ה-workspace מ-C:\n8n-nodes כדי שהכלל המלא ייטען
+globs: "**"
+alwaysApply: true
+---
+
+# אבטחה – כלל מרכזי
+
+**כלל האבטחה המלא** (credentials, GitHub, NPM, היסטוריה) מוגדר ב-workspace הראשי:
+
+`C:\n8n-nodes\.cursor\rules\security-sensitive-data.mdc`
+
+כדי שיהיה פעיל – פתח את Cursor מתיקיית **C:\n8n-nodes** (ולא מתיקיית הפרויקט בלבד).
+
+## תזכורת קצרה (אם עובדים מתת-תיקייה)
+
+- אסור: סיסמאות, API keys, שמות חברה (mer-group וכו'), אימיילים אמיתיים, URLs פנימיים.
+- לפני commit: חיפוש `password`, `api_key`, `mer-group`.
+- קבצים: `.env` ב-gitignore, לא לפרסם קבצי test עם credentials.

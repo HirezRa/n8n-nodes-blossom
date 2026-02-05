@@ -20,10 +20,14 @@ tests/
 coverage/
 .nyc_output/
 
-# Documentation (keep README.md)
+# Documentation (only whitelisted MD files - per security RULE)
 docs/
 *.md
 !README.md
+!CHANGELOG.md
+!LICENSE.md
+!SECURITY.md
+!CONTRIBUTING.md
 
 # CI/CD
 .github/

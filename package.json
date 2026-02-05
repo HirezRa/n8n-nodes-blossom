@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-blossom",
-	"version": "3.0.7",
+	"version": "3.0.8",
 	"description": "n8n node for Blossom LMS/LXP integration - manage users, groups, memberships, and learning data",
 	"license": "MIT",
 	"homepage": "https://github.com/HirezRa/n8n-nodes-blossom",
@@ -11,10 +11,12 @@
 		"lxp",
 		"learning-management-system"
 	],
-	"author": "Hirez10",
+	"author": {
+		"name": "Hirez10"
+	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/HirezRa/n8n-nodes-blossom.git"
+		"url": "git+https://github.com/HirezRa/n8n-nodes-blossom.git"
 	},
 	"scripts": {
 		"build": "n8n-node build",
