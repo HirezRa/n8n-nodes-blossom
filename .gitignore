@@ -16,6 +16,9 @@ credentials.*
 config.local.*
 *.secret
 
+# Temporary release notes (generated for gh release)
+release_notes_*.md
+
 # IDE
 .vscode/
 .idea/
