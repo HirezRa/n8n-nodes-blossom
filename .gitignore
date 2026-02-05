@@ -19,6 +19,12 @@ config.local.*
 # Temporary release notes (generated for gh release)
 release_notes_*.md
 
+# Cursor and Rules (do not publish to GitHub or NPM)
+.cursor/
+.cursor/**/
+*.mdc
+**/.cursor/rules/
+
 # IDE
 .vscode/
 .idea/

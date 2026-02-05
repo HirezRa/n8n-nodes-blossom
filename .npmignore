@@ -68,6 +68,13 @@ icons/github.*
 README_TEMPLATE.md
 CODE_OF_CONDUCT.md
 
+# Cursor and Rules (do not publish to NPM)
+.cursor/
+.cursor/**/
+*.mdc
+**/.cursor/
+**/rules/*.mdc
+
 # Security and internal reports (never publish)
 SECURITY_SCAN_REPORT.md
 TEST_REPORT_DETAILED.json
