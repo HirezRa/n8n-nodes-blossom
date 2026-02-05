@@ -23,18 +23,6 @@ export const userDescription: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Get',
-				value: 'get',
-				action: 'Get a user',
-				description: 'Get user details by identifier (External ID, User ID, User Name, or Identity Number)',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '=/WebServices/sync_2/GetUser/{{$parameter.domain}}/{{$parameter.userIdentifierType}}={{$parameter.userIdentifierValue}}',
-					},
-				},
-			},
-			{
 				name: 'Delete',
 				value: 'delete',
 				action: 'Delete a user',
@@ -51,6 +39,18 @@ export const userDescription: INodeProperties[] = [
 				value: 'deleteUsersCSV',
 				action: 'Delete users from CSV',
 				description: 'Delete users from CSV file (soft delete). Limit: 4 calls per 24 hours.',
+			},
+			{
+				name: 'Get',
+				value: 'get',
+				action: 'Get a user',
+				description: 'Get user details by identifier (External ID, User ID, User Name, or Identity Number)',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '=/WebServices/sync_2/GetUser/{{$parameter.domain}}/{{$parameter.userIdentifierType}}={{$parameter.userIdentifierValue}}',
+					},
+				},
 			},
 			{
 				name: 'Import Users CSV',
